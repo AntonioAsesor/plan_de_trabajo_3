@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía del Plan de Trabajo: Diagnóstico en Villas La Concordia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 500px;
+            max-height: 60vh;
+        }
+         .gantt-chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 800px;
+            max-height: 100vh;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Palette: Energetic & Playful -->
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#005f73] mb-2">Diagnóstico Integral en Villas La Concordia</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Un plan de trabajo para el mapeo de habilidades y la identificación de oportunidades de mercado, facilitando el desarrollo económico y social sostenible.</p>
+        </header>
+
+        <!-- Nueva sección de Resumen del Proyecto -->
+        <section class="mb-12 card p-8">
+            <h2 class="text-3xl font-bold text-center mb-4 text-[#005f73]">Resumen del Proyecto</h2>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto">El proyecto tiene como objetivo desarrollar un análisis integral de oportunidades de mercado y habilidades locales en Villas La Concordia. La meta es proveer información estratégica y herramientas de planificación para el empoderamiento económico de la comunidad, centrándose en la creación de planes de negocio y la capacitación para el empleo.</p>
+        </section>
+
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 text-center">
+            <div class="card p-6">
+                <p class="text-4xl font-bold text-[#0a9396]">200</p>
+                <p class="text-gray-500">Días de Proyecto</p>
+            </div>
+            <div class="card p-6">
+                <p class="text-4xl font-bold text-[#94d2bd]">148</p>
+                <p class="text-gray-500">Familias Involucradas</p>
+            </div>
+            <div class="card p-6">
+                <p class="text-4xl font-bold text-[#ee9b00]">6</p>
+                <p class="text-gray-500">Fases Principales</p>
+            </div>
+            <div class="card p-6">
+                <p class="text-4xl font-bold text-[#ca6702]">6</p>
+                <p class="text-gray-500">Hitos Clave</p>
+            </div>
+        </section>
+
+        <section class="mb-16 card p-8">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Fases del Proyecto</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">El proyecto se divide en siete fases estratégicas, desde la planificación inicial hasta la entrega de los planes finales de negocio y formación.</p>
+            <div class="chart-container h-[250px] max-h-[40vh]">
+                <canvas id="phasesChart"></canvas>
+            </div>
+        </section>
+
+        <section class="mb-16 card p-8">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Días de Trabajo por Actividad</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Distribución de los días de trabajo dedicados a las principales actividades del proyecto.</p>
+            <div class="chart-container h-[250px] max-h-[40vh]">
+                <canvas id="daysChart"></canvas>
+            </div>
+        </section>
+
+        <section class="mb-16 card p-8">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Instrumentos de Investigación y Consultas</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Número esperado de instrumentos a aplicar durante las fases de recolección de información.</p>
+            <div class="chart-container h-[250px] max-h-[40vh]">
+                <canvas id="instrumentsChart"></canvas>
+            </div>
+        </section>
+
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Hitos y Entregables Clave</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Cada fase culmina con la entrega de productos específicos (hitos) que marcan el progreso del proyecto y proporcionan insumos valiosos para las siguientes etapas.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="card p-6">
+                    <p class="text-2xl mb-2">🗓️</p>
+                    <h3 class="font-bold text-lg text-[#0a9396]">Hito 1: Plan de Trabajo</h3>
+                    <p class="text-gray-500 text-sm">Entrega de un cronograma detallado, metodología y responsables.</p>
+                    <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 15 Días</p>
+                </div>
+                <div class="card p-6">
+                    <p class="text-2xl mb-2">👥</p>
+                    <h3 class="font-bold text-lg text-[#0a9396]">Hito 2: Mapeo de Habilidades</h3>
+                    <p class="text-gray-500 text-sm">Perfiles de habilidades individuales y colectivas de la comunidad.</p>
+                    <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 75 Días</p>
+                </div>
+                <div class="card p-6">
+                     <p class="text-2xl mb-2">📈</p>
+                    <h3 class="font-bold text-lg text-[#0a9396]">Hito 3: Estudio de Mercado</h3>
+                    <p class="text-gray-500 text-sm">Análisis de oportunidades de mercado y sectores viables.</p>
+                    <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 120 Días</p>
+                </div>
+                <div class="card p-6">
+                     <p class="text-2xl mb-2">💡</p>
+                    <h3 class="font-bold text-lg text-[#0a9396]">Hito 4: Ideas de Negocio</h3>
+                    <p class="text-gray-500 text-sm">Propuesta de 7 ideas de planes de negocio validadas.</p>
+                    <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 120 Días</p>
+                </div>
+                <div class="card p-6">
+                     <p class="text-2xl mb-2">📋</p>
+                    <h3 class="font-bold text-lg text-[#0a9396]">Hito 5: Planes de Negocio</h3>
+                    <p class="text-gray-500 text-sm">Desarrollo de 5 planes de negocio completos y detallados.</p>
+                    <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 200 Días</p>
+                </div>
+                <div class="card p-6">
+                     <p class="text-2xl mb-2">🎓</p>
+                    <h3 class="font-bold text-lg text-[#0a9396]">Hito 6: Planes de Formación</h3>
+                    <p class="text-gray-500 text-sm">Propuesta de 5 planes de formación alineados a las brechas.</p>
+                    <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 200 Días</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card p-8 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Cronograma Detallado de Actividades</h2>
+            <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Esta visualización tipo Gantt muestra la duración y secuencia de cada actividad a lo largo de los 200 días del proyecto, permitiendo un seguimiento detallado del progreso.</p>
+            <div class="gantt-chart-container">
+                <canvas id="ganttChart"></canvas>
+            </div>
+            <!-- Nuevo botón para el plan de trabajo -->
+            <div class="text-center mt-8">
+                 <!-- Aquí se reemplazó el botón con un enlace (<a>) con el mismo estilo. -->
+                 <!-- Reemplaza el 'href' con el URL real de tu archivo. -->
+                 <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" download class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
+                    Detalle de Plan de trabajo
+                 </a>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+             <div class="card p-8">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Enfoque Metodológico</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">El diagnóstico se basa en un enfoque mixto, combinando técnicas cuantitativas y cualitativas para asegurar una comprensión profunda y participativa.</p>
+                <div class="chart-container h-[300px] max-h-[50vh]">
+                    <canvas id="methodologyChart"></canvas>
+                </div>
+            </div>
+            <div class="card p-8">
+                <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Resultados Esperados</h2>
+                <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Los productos finales están diseñados para ser insumos accionables que guíen las futuras intervenciones de desarrollo en la comunidad.</p>
+                 <div class="chart-container h-[300px] max-h-[50vh]">
+                    <canvas id="outcomesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nueva sección del equipo de trabajo -->
+        <section class="card p-8 mb-16">
+            <h2 class="text-3xl font-bold text-center mb-8 text-[#005f73]">Nuestro Equipo de Consultoría</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Tarjeta de Consultor Principal -->
+                <div class="flex flex-col items-center text-center p-6 bg-gray-100 rounded-lg shadow-inner">
+                    <img src="image_7d8900.jpg" onerror="this.src='https://placehold.co/150x150/94d2bd/ffffff?text=Danilo+M'" alt="Fotografía de Danilo Martínez" class="w-32 h-32 rounded-full object-cover mb-4">
+                    <h3 class="text-2xl font-semibold text-[#0a9396] mb-1">Danilo Martínez Alonzo</h3>
+                    <p class="font-bold text-[#ee9b00] mb-3">Consultor Principal</p>
+                    <p class="text-sm text-gray-600 max-w-md">Danilo posee vasta experiencia en estudios cualitativos y cuantitativos en comunidades, abordando temas de género, niñez y grupos vulnerables. Su enfoque en resiliencia, seguridad alimentaria y desarrollo local ha sido fundamental. Destacan sus habilidades en la construcción de planes de negocio para más de 80 empresas en Nicaragua y El Salvador, así como su dominio en la gestión de datos con plataformas como SPSS, Power BI y Epi Info.</p>
+                </div>
+                <!-- Tarjeta de Consultor de Apoyo -->
+                <div class="flex flex-col items-center text-center p-6 bg-gray-100 rounded-lg shadow-inner">
+                    <img src="image_6edbef.png" onerror="this.src='https://placehold.co/150x150/94d2bd/ffffff?text=Marcos+A'" alt="Fotografía de Marcos Andrade" class="w-32 h-32 rounded-full object-cover mb-4">
+                    <h3 class="text-2xl font-semibold text-[#0a9396] mb-1">Marcos Andrade Alvarenga</h3>
+                    <p class="font-bold text-[#ee9b00] mb-3">Especialista en Desarrollo Empresarial</p>
+                    <p class="text-sm text-gray-600 max-w-md">Marcos aporta una sólida experiencia en programas de formación empresarial para jóvenes y adultos, siendo un docente universitario destacado por su empatía y calidad humana. Sus habilidades clave incluyen el diseño de planes de negocio, finanzas empresariales (costeo, punto de equilibrio, proyecciones), estrategias comerciales (penetración de mercado, diversificación) y la creación de currículas de formación adaptadas a las necesidades específicas.</p>
+                </div>
+            </div>
+        </section>
+
+
+        <footer class="text-center mt-16 pt-8 border-t border-gray-200">
+            <p class="text-gray-500">Infografía generada para la propuesta de consultoría en Villas La Concordia.</p>
+            <p class="text-sm text-gray-400">Referencia: RQ8299</p>
+        </footer>
+    </div>
+
+    <script>
+        // Función para evitar el truncamiento de etiquetas en el gráfico
+        const wrapLabel = (label) => {
+            return label;
+        };
+
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            } else {
+                return label;
+            }
+        };
+
+        const palette = {
+            blueDark: '#005f73',
+            blueMid: '#0a9396',
+            blueLight: '#94d2bd',
+            yellow: '#e9d8a6',
+            orangeMid: '#ee9b00',
+            orangeDark: '#ca6702',
+            redDark: '#ae2012',
+        };
+
+        const phasesCtx = document.getElementById('phasesChart').getContext('2d');
+        new Chart(phasesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Fases del Proyecto'],
+                datasets: [
+                    { label: 'Fase 0: Preparación y planificación', data: [14], backgroundColor: palette.blueDark },
+                    { label: 'Fase 1: Diseño de instrumentos', data: [13], backgroundColor: palette.blueMid },
+                    { label: 'Fase 2: Levantamiento y Recolección', data: [7], backgroundColor: palette.blueLight },
+                    { label: 'Fase 3: Análisis, sistematización', data: [15], backgroundColor: palette.yellow },
+                    { label: 'Fase 4: Validación Comunitaria', data: [16], backgroundColor: palette.orangeMid },
+                    { label: 'Fase 5: Diseño y Formulación', data: [128], backgroundColor: palette.orangeDark },
+                    { label: 'Fase 6: Presentación y Retroalimentación', data: [3], backgroundColor: palette.redDark },
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true, title: { display: true, text: 'Duración (Días)' } },
+                    y: { stacked: true }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        const instrumentsCtx = document.getElementById('instrumentsChart').getContext('2d');
+        new Chart(instrumentsCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Form. Encuesta Hogares',
+                    'Form. Encuesta Personas',
+                    'Form. Encuesta Empresas',
+                    'Guía Grupo focales',
+                    'Guía entrevista calificada',
+                    'Guía taller consulta'
+                ],
+                datasets: [{
+                    label: '# Esperado',
+                    data: [59, 80, 10, 4, 6, 1],
+                    backgroundColor: [
+                        palette.blueDark,
+                        palette.blueMid,
+                        palette.blueLight,
+                        palette.yellow,
+                        palette.orangeMid,
+                        palette.orangeDark
+                    ],
+                    borderColor: 'rgba(0,0,0,0.1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Número de Instrumentos'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        const daysCtx = document.getElementById('daysChart').getContext('2d');
+        new Chart(daysCtx, {
+            type: 'bar',
+            data: {
+                labels: [
+                    'Comunidad',
+                    'Reunión/discusión',
+                    'ASR',
+                    'Hitos (entregas)'
+                ],
+                datasets: [{
+                    label: 'Días Efectivos',
+                    data: [35, 22, 125, 9],
+                    backgroundColor: [
+                        palette.blueDark,
+                        palette.orangeMid,
+                        palette.blueLight,
+                        palette.redDark
+                    ],
+                    borderColor: 'rgba(0,0,0,0.1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Días'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        const ganttData = {
+            labels: [
+                'Fase 1: Planificación',
+                '   Revisión documental',
+                '   Diseño de instrumentos',
+                '   Capacitación de equipo',
+                '   Coordinación logística',
+                '   **Entrega Hito 1**',
+                'Fase 2: Recolección',
+                '   Encuestas a hogares',
+                '   Grupos focales',
+                '   Entrevistas a actores',
+                '   Mapeo participativo',
+                '   Observación en campo',
+                'Fase 3: Análisis',
+                '   Análisis cuantitativo',
+                '   Análisis cualitativo',
+                '   Triangulación de datos',
+                '   ID preliminar',
+                '   Elaboración Catálogo Hab.',
+                '   **Entrega Hito 2**',
+                'Fase 4: Validación',
+                '   Talleres de validación',
+                '   **Validación Hitos 3 y 4**',
+                '   **Entrega Hito 3**',
+                '   **Entrega Hito 4**',
+                '   Sesiones de co-creación',
+                'Fase 5: Diseño Final',
+                '   Desarrollo Planes Negocio',
+                '   Diseño Planes Formación',
+                '   Revisión interna',
+                '   **Entrega Hito 5**',
+                '   **Entrega Hito 6**',
+                'Fase 6: Cierre',
+                '   Presentación final'
+            ],
+            datasets: [{
+                label: 'Cronograma',
+                data: [
+                    [0, 15], [0, 5], [3, 12], [9, 14], [0, 15], [14, 15],
+                    [15, 89], [15, 68], [24, 70], [29, 75], [38, 89], [15, 89],
+                    [60, 113], [60, 108], [64, 110], [67, 113], [67, 113], [67, 74], [73, 74],
+                    [105, 146], [105, 117], [115, 119], [118, 119], [118, 119], [119, 146],
+                    [146, 198], [146, 190], [146, 190], [190, 198], [198, 199], [198, 199],
+                    [198, 199], [198, 199],
+                ],
+                backgroundColor: [
+                    'rgba(0, 95, 115, 0.4)',
+                    palette.blueDark, palette.blueDark, palette.blueDark, palette.blueDark, palette.redDark,
+                    'rgba(10, 147, 150, 0.4)',
+                    palette.blueMid, palette.blueMid, palette.blueMid, palette.blueMid, palette.blueMid,
+                    'rgba(148, 210, 189, 0.4)',
+                    palette.blueLight, palette.blueLight, palette.blueLight, palette.blueLight, palette.blueLight, palette.redDark,
+                    'rgba(233, 216, 166, 0.4)',
+                    palette.yellow, palette.redDark, palette.redDark, palette.redDark, palette.yellow,
+                    'rgba(238, 155, 0, 0.4)',
+                    palette.orangeMid, palette.orangeMid, palette.orangeMid, palette.redDark, palette.redDark,
+                    'rgba(202, 103, 2, 0.4)',
+                    palette.orangeDark
+                ],
+                borderColor: 'rgba(0,0,0,0.1)',
+                borderWidth: 1,
+                barPercentage: 0.8,
+                categoryPercentage: 0.9,
+            }]
+        };
+        const ganttCtx = document.getElementById('ganttChart').getContext('2d');
+        new Chart(ganttCtx, {
+            type: 'bar',
+            data: ganttData,
+            options: {
+                indexAxis: 'y',
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        min: 0,
+                        max: 200,
+                        title: {
+                            display: true,
+                            text: 'Días del Proyecto'
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            autoSkip: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback,
+                            label: function(context) {
+                                const start = context.raw[0];
+                                const end = context.raw[1];
+                                const duration = end - start;
+                                return `Día ${start+1} a Día ${end+1} (Duración: ${duration} días)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const methodologyCtx = document.getElementById('methodologyChart').getContext('2d');
+        new Chart(methodologyCtx, {
+            type: 'doughnut',
+            data: {
+                // Estos números representan el peso porcentual de cada técnica
+                // Suman 100%
+                labels: ['Encuestas Cuantitativas', 'Grupos Focales (Cuali)', 'Entrevistas a Actores', 'Mapeo Participativo (PRA)'],
+                datasets: [{
+                    data: [40, 25, 20, 15],
+                    backgroundColor: [palette.blueDark, palette.blueMid, palette.yellow, palette.orangeMid]
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+        const outcomesCtx = document.getElementById('outcomesChart').getContext('2d');
+        new Chart(outcomesCtx, {
+            type: 'doughnut',
+            data: {
+                // Estos números representan una cantidad de productos o entregables.
+                // El 25 se repite para cada sección.
+                labels: ['Mapeo de Habilidades', 'Estudio de Mercado', 'Planes de Negocio', 'Planes de Formación'],
+                datasets: [{
+                    data: [25, 25, 25, 25],
+                    backgroundColor: [palette.blueLight, palette.orangeDark, palette.redDark, palette.blueDark]
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: { callbacks: { title: tooltipTitleCallback } }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
