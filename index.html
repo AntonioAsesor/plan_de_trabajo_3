@@ -696,6 +696,123 @@
         });
 
     </script>
+    
+    // Inicio de Tabla Resumen actividades Hitos //////////////////////////////////////////
+<section id="actividades-hitos" class="my-8">
+  <div class="container mx-auto px-4 py-6">
+    <h2 class="text-2xl font-bold text-[#005f73] mb-4">
+      Actividades e Hitos (días)
+    </h2>
+
+    <div id="tabla-ah" class="overflow-x-auto rounded-lg shadow">
+      <div id="spinner" class="p-4 text-sm text-gray-500">Cargando datos…</div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // 🔧 CONFIGURA AQUÍ
+  const SHEET_ID   = "AAA_BBB_CCC";                 // <- tu ID
+  const SHEET_NAME = "Resumen_Cronograma";          // <- nombre exacto de la hoja
+  const RANGE      = "A5:F100";                     // <- ajusta el rango según tus filas
+
+  // Endpoint GViz (JSON) con rango
+  const url = `https://docs.google.com/spreadsheets/d/${1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(Resumen_Cronograma)}&range=${encodeURIComponent(A4:F4)}&cachebust=${Date.now()}`;
+
+  // Utilidad: tomar valor formateado "f" o valor "v"
+  const cellVal = c => (c ? (c.f ?? c.v ?? "") : "");
+
+  fetch(url, { cache: "no-store" })
+    .then(r => r.text())
+    .then(txt => {
+      // Limpia el prefijo/sufijo de GViz
+      const json = JSON.parse(txt.substring(47).slice(0, -2));
+      const rows = json.table.rows || [];
+
+      // Construir tabla
+      let html = `
+        <table class="min-w-full bg-white border border-gray-200">
+          <thead>
+            <tr class="bg-[#94d2bd] text-gray-800 text-sm">
+              <th class="px-4 py-2 text-left font-semibold">Actividades</th>
+              <th class="px-2 py-2 text-center font-semibold">Duración (días)</th>
+              <th class="px-2 py-2 text-center font-semibold">Inicio</th>
+              <th class="px-2 py-2 text-center font-semibold">Fin</th>
+              <th class="px-2 py-2 text-center font-semibold">Hito</th>
+              <th class="px-2 py-2 text-center font-semibold">Días Meta</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700 text-sm leading-tight">
+      `;
+
+      rows.forEach((row) => {
+        const c = row.c || [];
+        const actividad = cellVal(c[0]).toString().trim();
+        const dur       = cellVal(c[1]);
+        const ini       = cellVal(c[2]);
+        const fin       = cellVal(c[3]);
+        const hito      = cellVal(c[4]);
+        const meta      = cellVal(c[5]);
+
+        // Salta filas vacías
+        if (!actividad) return;
+
+        // Si la fila es el TOTAL, la mandamos al tfoot más abajo
+        const esTotal = actividad.toLowerCase().includes("total");
+
+        if (!esTotal) {
+          html += `
+            <tr class="border-b odd:bg-white even:bg-gray-50 hover:bg-gray-100">
+              <td class="px-4 py-1">${actividad}</td>
+              <td class="px-2 py-1 text-center ${Number(dur) ? 'font-semibold' : ''}">${dur}</td>
+              <td class="px-2 py-1 text-center">${ini}</td>
+              <td class="px-2 py-1 text-center">${fin}</td>
+              <td class="px-2 py-1 text-center ${/Hito/i.test(hito) ? 'font-semibold' : 'italic'}">${hito}</td>
+              <td class="px-2 py-1 text-center">${meta}</td>
+            </tr>
+          `;
+        }
+      });
+
+      html += `
+          </tbody>
+      `;
+
+      // Construye el pie (Total) tomando la última fila con "Total" si existe
+      const totalRow = rows.slice().reverse().find(r => (r.c?.[0]?.v ?? "").toString().toLowerCase().includes("total"));
+      if (totalRow) {
+        const c = totalRow.c || [];
+        const totalDur = cellVal(c[1]);
+        const totalMeta = cellVal(c[5]);
+        html += `
+          <tfoot>
+            <tr class="bg-gray-100 font-bold text-gray-700 text-sm border-t">
+              <td class="px-4 py-2 text-right">Total</td>
+              <td class="px-2 py-2 text-center">${totalDur}</td>
+              <td colspan="3"></td>
+              <td class="px-2 py-2 text-center">${totalMeta}</td>
+            </tr>
+          </tfoot>
+        `;
+      }
+
+      html += `</table>`;
+
+      document.getElementById("tabla-ah").innerHTML = html;
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById("tabla-ah").innerHTML =
+        `<div class="p-4 text-red-600 text-sm">No se pudo cargar la tabla. Revisa el ID, hoja y permisos.</div>`;
+    })
+    .finally(() => {
+      const sp = document.getElementById("spinner");
+      if (sp) sp.remove();
+    });
+</script>
+
+    
 </body>
 </html>
+
 
