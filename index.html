@@ -12,6 +12,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
         }
         .chart-container {
             position: relative;
@@ -22,7 +23,7 @@
             height: 500px;
             max-height: 60vh;
         }
-         .gantt-chart-container {
+        .gantt-chart-container {
             position: relative;
             width: 100%;
             max-width: 1200px;
@@ -54,10 +55,10 @@
         <!-- Nueva sección de Resumen del Proyecto -->
         <section class="mb-12 card p-8">
             <h2 class="text-3xl font-bold text-center mb-4 text-[#005f73]">Resumen del Proyecto</h2>
-            <p class="text-center text-gray-600 max-w-3xl mx-auto">El proyecto tiene como objetivo desarrollar un análisis integral de oportunidades de mercado y habilidades locales en Villas La Concordia de aproximadamente 148 familias.
-     En este contexto, se ha planteado el desafío de desarrollar un diagnóstico integral de oportunidades de mercado y mapeo de habilidades en la población Villas La Concordia, con el fin de facilitar la integración sostenible de los habitantes en cadenas de valor o empleos existentes, para encontrar opciones que aporten al desarrollo económico y social mediante la identificación de recursos locales, capacidades individuales y colectivas, así como necesidades de formación pertinentes y asociadas a estos fines.</p>
+            <p class="text-center text-gray-600 max-w-3xl mx-auto">El proyecto tiene como objetivo desarrollar un análisis integral de oportunidades de mercado y habilidades locales en Villas La Concordia de aproximadamente 148 familias. En este contexto, se ha planteado el desafío de desarrollar un diagnóstico integral de oportunidades de mercado y mapeo de habilidades en la población Villas La Concordia, con el fin de facilitar la integración sostenible de los habitantes en cadenas de valor o empleos existentes, para encontrar opciones que aporten al desarrollo económico y social mediante la identificación de recursos locales, capacidades individuales y colectivas, así como necesidades de formación pertinentes y asociadas a estos fines.</p>
         </section>
-    <!-- Tarjetas datos Resumen del Proyecto -->
+
+        <!-- Tarjetas datos Resumen del Proyecto -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 text-center">
             <div class="card p-6">
                 <p class="text-4xl font-bold text-[#0a9396]">200</p>
@@ -99,13 +100,11 @@
             <div class="chart-container h-[250px] max-h-[40vh]">
                 <canvas id="instrumentsChart"></canvas>
             </div>
-             <!-- Nuevo botón para el plan de trabajo que lleva al: https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457-->
+            <!-- Botón para el plan de trabajo que lleva al documento de Google Sheets -->
             <div class="text-center mt-8">
-                 <!-- Aquí se reemplazó el botón con un enlace (<a>) con el mismo estilo. -->
-                 <!-- Reemplazé el 'href' con el URL real del archivo INSTRUMENTOS. -->
-                 <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" download class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
+                <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" target="_blank" class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
                     Instrumentos en construcción...
-                 </a>
+                </a>
             </div>
         </section>
 
@@ -126,25 +125,25 @@
                     <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 75 Días</p>
                 </div>
                 <div class="card p-6">
-                     <p class="text-2xl mb-2">📈</p>
+                    <p class="text-2xl mb-2">📈</p>
                     <h3 class="font-bold text-lg text-[#0a9396]">Hito 3: Estudio de Mercado</h3>
                     <p class="text-gray-500 text-sm">Análisis de oportunidades de mercado y sectores viables.</p>
                     <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 120 Días</p>
                 </div>
                 <div class="card p-6">
-                     <p class="text-2xl mb-2">💡</p>
+                    <p class="text-2xl mb-2">💡</p>
                     <h3 class="font-bold text-lg text-[#0a9396]">Hito 4: Ideas de Negocio</h3>
                     <p class="text-gray-500 text-sm">Propuesta de 7 ideas de planes de negocio validadas.</p>
                     <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 120 Días</p>
                 </div>
                 <div class="card p-6">
-                     <p class="text-2xl mb-2">📋</p>
+                    <p class="text-2xl mb-2">📋</p>
                     <h3 class="font-bold text-lg text-[#0a9396]">Hito 5: Planes de Negocio</h3>
                     <p class="text-gray-500 text-sm">Desarrollo de 5 planes de negocio completos y detallados.</p>
                     <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 200 Días</p>
                 </div>
                 <div class="card p-6">
-                     <p class="text-2xl mb-2">🎓</p>
+                    <p class="text-2xl mb-2">🎓</p>
                     <h3 class="font-bold text-lg text-[#0a9396]">Hito 6: Planes de Formación</h3>
                     <p class="text-gray-500 text-sm">Propuesta de 5 planes de formación alineados a las brechas.</p>
                     <p class="mt-2 font-semibold text-[#ca6702]">Plazo: 200 Días</p>
@@ -158,237 +157,47 @@
             <div class="gantt-chart-container">
                 <canvas id="ganttChart"></canvas>
             </div>
-            <!-- Nuevo botón para el plan de trabajo que lleva al: https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457-->
+            <!-- Botón para el plan de trabajo que lleva al documento de Google Sheets -->
             <div class="text-center mt-8">
-                 <!-- Aquí se reemplazó el botón con un enlace (<a>) con el mismo estilo. -->
-                 <!-- Reemplazamos el 'href' con el URL real de tu archivo. -->
-                 <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" download class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
+                <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" target="_blank" class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
                     Detalle de Plan de trabajo
-                 </a>
+                </a>
             </div>
         </section>
-        
-<!-- Bloque de Código para Tablas del Proyecto: REUNIONES FUSAL AHORA Tiempo REAL-->
-<!-- Bloque de Código para Tablas del Proyecto: CRONOGRAMA FUSAL -->
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cronograma de Actividades FUSAL</title>
-    <!-- Incluyendo Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8;
-        }
-    </style>
-</head>
-<body class="p-8">
 
-    <section id="cronograma-fusal" class="my-8">
-        <div class="container mx-auto px-4 py-6">
-            <!-- Contenedor principal de la tabla con el padding, la sombra y el fondo blanco -->
-            <div class="bg-white rounded-lg shadow-lg p-6 space-y-4">
-                <h2 class="text-2xl font-bold text-[#005f73]">
-                    Cronograma de actividades FUSAL
-                </h2>
-
-                <div id="tabla-cronograma" class="overflow-x-auto">
-                    <div id="spinner" class="p-4 text-sm text-gray-500">Cargando datos…</div>
+        <!-- Bloque de Código para Tablas del Proyecto: REUNIONES FUSAL Y CRONOGRAMA FUSAL -->
+        <section id="cronograma-fusal" class="my-8">
+            <div class="container mx-auto px-4 py-6">
+                <!-- Contenedor principal de la tabla con el padding, la sombra y el fondo blanco -->
+                <div class="bg-white rounded-lg shadow-lg p-6 space-y-4">
+                    <h2 class="text-2xl font-bold text-[#005f73]">
+                        Cronograma de actividades FUSAL
+                    </h2>
+                    <div id="tabla-cronograma" class="overflow-x-auto">
+                        <div id="spinner-cronograma" class="p-4 text-sm text-gray-500">Cargando datos…</div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <script>
-        // 🔧 CONFIGURA AQUÍ
-        const SHEET_ID = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo"; // Tu ID de Google Sheets
-        const SHEET_NAME = "Resumen_Cronograma"; // Nombre de la hoja
-        const RANGE = "A26:C35"; // Rango de datos
+        <!-- Inicio de Tabla Resumen Actividades e Hitos -->
+        <section id="actividades-hitos" class="mb-16 card p-8">
+            <div class="container mx-auto px-4 py-6">
+                <!-- Contenedor principal de la tabla con el padding y la sombra -->
+                <div class="bg-white rounded-lg shadow-lg p-6 space-y-4">
+                    <!-- Título de la tabla -->
+                    <h2 class="text-2xl font-bold text-[#005f73] mb-4">
+                        Actividades e Hitos (días)
+                    </h2>
+                    <div id="tabla-ah" class="overflow-x-auto rounded-lg shadow">
+                        <div id="spinner-ah" class="p-4 text-sm text-gray-500">Cargando datos…</div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        // ✅ URL para obtener los datos
-        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(RANGE)}&cachebust=${Date.now()}`;
-
-        // Función para extraer el valor formateado
-        const cellVal = c => (c ? (c.f ?? c.v ?? "") : "");
-
-        fetch(url, {
-                cache: "no-store"
-            })
-            .then(r => r.text())
-            .then(txt => {
-                const json = JSON.parse(txt.substring(47).slice(0, -2));
-                const rows = json.table.rows || [];
-
-                let html = `
-                    <table class="w-full text-sm text-left text-gray-500 rounded-lg">
-                        <thead class="bg-[#94d2bd] text-xs text-gray-700 uppercase">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 rounded-tl-lg">Reuniones con FUSAL</th>
-                                <th scope="col" class="px-6 py-3">Fecha</th>
-                                <th scope="col" class="px-6 py-3">Distancia (días)</th>
-                                <th scope="col" class="px-6 py-3 rounded-tr-lg">Realizado</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-700 leading-tight">
-                `;
-
-                rows.forEach((row, index) => {
-                    const c = row.c || [];
-                    const actividad = cellVal(c[0]);
-                    const responsable = cellVal(c[1]);
-                    const fecha = cellVal(c[2]);
-
-                    if (!actividad) return;
-
-                    html += `
-                        <tr class="bg-white border-b odd:bg-white even:bg-gray-50 hover:bg-gray-100">
-                            <td class="px-6 py-3">${actividad}</td>
-                            <td class="px-6 py-3">${responsable}</td>
-                            <td class="px-6 py-3">${fecha}</td>
-                            <td class="px-6 py-3 text-center">
-                                <input type="checkbox" class="h-4 w-4 text-[#94d2bd] rounded focus:ring-[#94d2bd]">
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                html += `</tbody></table>`;
-                document.getElementById("tabla-cronograma").innerHTML = html;
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById("tabla-cronograma").innerHTML =
-                    `<div class="p-4 text-red-600 text-sm">No se pudo cargar la tabla. Revisa el ID, hoja y rango.</div>`;
-            })
-            .finally(() => {
-                const sp = document.getElementById("spinner");
-                if (sp) sp.remove();
-            });
-    </script>
-</body>
-</html>
-<!-- Fin de Tabla -->
-
-<!-- Inicio de Tabla Resumen Actividades e Hitos -->
-<section id="actividades-hitos" class="mb-16 card p-8>
-  <div class="container mx-auto px-4 py-6">
-<!-- Contenedor principal de la tabla con el padding y la sombra -->
-    <div class="bg-white rounded-lg shadow-lg p-6 space-y-4">
-<!-- Título de la tabla -->
-    <h2 class="text-2xl font-bold text-[#005f73] mb-4">
-      Actividades e Hitos (días)
-    </h2>
-    <div id="tabla-ah" class="overflow-x-auto rounded-lg shadow">
-      <div id="spinner" class="p-4 text-sm text-gray-500">Cargando datos…</div>
-    </div>
-  </div>
-</div>
-</section>
-
-<script>
-  // 🔧 CONFIGURA AQUÍ
-  const SHEET_ID   = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo";   // <- tu ID de Google Sheets
-  const SHEET_NAME = "Resumen_Cronograma";                  // <- nombre exacto de la hoja
-  const RANGE      = "A5:F15";                              // <- rango de datos reales
-
-  // ✅ URL corregida usando las variables correctas
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(RANGE)}&cachebust=${Date.now()}`;
-
-  // Función para extraer el valor formateado
-  const cellVal = c => (c ? (c.f ?? c.v ?? "") : "");
-
-  fetch(url, { cache: "no-store" })
-    .then(r => r.text())
-    .then(txt => {
-      const json = JSON.parse(txt.substring(47).slice(0, -2));
-      const rows = json.table.rows || [];
-
-      let html = `
-        <table class="w-full bg-white border border-gray-200 text-sm text-left text-gray-500 rounded-lg shadow-md">
-          <thead>
-            <tr class="bg-[#94d2bd] text-gray-800 text-sm">
-              <th class="px-4 py-2 text-left font-semibold">Actividades</th>
-              <th class="px-4 py-2 text-center font-semibold">Duración (días)</th>
-              <th class="px-4 py-2 text-center font-semibold">Inicio</th>
-              <th class="px-4 py-2 text-center font-semibold">Fin</th>
-              <th class="px-4 py-2 text-center font-semibold">Hito</th>
-              <th class="px-4 py-2 text-center font-semibold">Días Meta</th>
-            </tr>
-          </thead>
-          <tbody class="text-gray-700 text-sm leading-tight">
-      `;
-
-      rows.forEach((row) => {
-        const c = row.c || [];
-        const actividad = cellVal(c[0]).toString().trim();
-        const dur       = cellVal(c[1]);
-        const ini       = cellVal(c[2]);
-        const fin       = cellVal(c[3]);
-        const hito      = cellVal(c[4]);
-        const meta      = cellVal(c[5]);
-
-        if (!actividad) return;
-
-        const esTotal = actividad.toLowerCase().includes("total");
-
-        if (!esTotal) {
-          html += `
-            <tr class="border-b odd:bg-white even:bg-gray-50 hover:bg-gray-100">
-              <td class="px-4 py-3">${actividad}</td>
-              <td class="px-2 py-3 text-center ${Number(dur) ? 'font-semibold' : ''}">${dur}</td>
-              <td class="px-2 py-3 text-center">${ini}</td>
-              <td class="px-2 py-3 text-center">${fin}</td>
-              <td class="px-2 py-3 text-center ${/Hito/i.test(hito) ? 'font-semibold' : 'italic'}">${hito}</td>
-              <td class="px-2 py-3 text-center">${meta}</td>
-            </tr>
-          `;
-        }
-      });
-
-      html += `</tbody>`;
-
-      // Total si existe
-      const totalRow = rows.slice().reverse().find(r => (r.c?.[0]?.v ?? "").toString().toLowerCase().includes("total"));
-      if (totalRow) {
-        const c = totalRow.c || [];
-        const totalDur = cellVal(c[1]);
-        const totalMeta = cellVal(c[5]);
-        html += `
-          <tfoot>
-            <tr class="bg-gray-100 font-bold text-gray-700 text-sm border-t">
-              <td class="px-4 py-2 text-right">Total</td>
-              <td class="px-2 py-2 text-center">${totalDur}</td>
-              <td colspan="3"></td>
-              <td class="px-2 py-2 text-center">${totalMeta}</td>
-            </tr>
-          </tfoot>
-        `;
-      }
-
-      html += `</table>`;
-      document.getElementById("tabla-ah").innerHTML = html;
-    })
-    .catch(err => {
-      console.error(err);
-      document.getElementById("tabla-ah").innerHTML =
-        `<div class="p-4 text-red-600 text-sm">No se pudo cargar la tabla. Revisa el ID, hoja y permisos.</div>`;
-    })
-    .finally(() => {
-      const sp = document.getElementById("spinner");
-      if (sp) sp.remove();
-    });
-</script>
-<!-- Fin de Tabla -->
-        
-        <!-- -->
-        
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-             <div class="card p-8">
+            <div class="card p-8">
                 <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Enfoque Metodológico</h2>
                 <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">El diagnóstico se basa en un enfoque mixto, combinando técnicas cuantitativas y cualitativas para asegurar una comprensión profunda y participativa.</p>
                 <div class="chart-container h-[300px] max-h-[50vh]">
@@ -398,7 +207,7 @@
             <div class="card p-8">
                 <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Resultados Esperados</h2>
                 <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Los productos finales están diseñados para ser insumos accionables que guíen las futuras intervenciones de desarrollo en la comunidad.</p>
-                 <div class="chart-container h-[300px] max-h-[50vh]">
+                <div class="chart-container h-[300px] max-h-[50vh]">
                     <canvas id="outcomesChart"></canvas>
                 </div>
             </div>
@@ -424,7 +233,6 @@
                 </div>
             </div>
         </section>
-
 
         <footer class="text-center mt-16 pt-8 border-t border-gray-300">
             <p class="text-gray-500">Infografía generada por asesor.negocio.ni@gmail.com para la propuesta de consultoría en Villas La Concordia.</p>
@@ -458,6 +266,7 @@
             redDark: '#ae2012',
         };
 
+        // Gráfico de Fases del Proyecto
         const phasesCtx = document.getElementById('phasesChart').getContext('2d');
         new Chart(phasesCtx, {
             type: 'bar',
@@ -487,12 +296,12 @@
             }
         });
 
+        // Gráfico de Instrumentos
         const instrumentsCtx = document.getElementById('instrumentsChart').getContext('2d');
         new Chart(instrumentsCtx, {
             type: 'bar',
             data: {
                 labels: [
-                    //'Form. Encuesta a Hogares', Lo eliminamos de la vista web
                     'Form. Encuesta a Personas',
                     'Guía Entrevista a Empresas',
                     'Guía Grupo focales',
@@ -503,7 +312,6 @@
                     label: '# Esperado',
                     data: [60, 12, 4, 6, 1],
                     backgroundColor: [
-                        //palette.blueDark, Elinamos encuesta hogar
                         palette.blueMid,
                         palette.blueLight,
                         palette.yellow,
@@ -532,7 +340,8 @@
                 }
             }
         });
-// Estas son Constante para Gráfico días de trabajo por Actividad
+
+        // Gráfico de Días de Trabajo por Actividad
         const daysCtx = document.getElementById('daysChart').getContext('2d');
         new Chart(daysCtx, {
             type: 'bar',
@@ -574,41 +383,42 @@
             }
         });
 
+        // Gráfico de Cronograma (Gantt)
         const ganttData = {
             labels: [
                 'Fase 1: Planificación',
-                '   Revisión documental',
-                '   Diseño de instrumentos',
-                '   Capacitación de equipo',
-                '   Coordinación logística',
-                '   **Entrega Hito 1**',
+                '   Revisión documental',
+                '   Diseño de instrumentos',
+                '   Capacitación de equipo',
+                '   Coordinación logística',
+                '   **Entrega Hito 1**',
                 'Fase 2: Recolección',
-                '   Encuestas a hogares',
-                '   Grupos focales',
-                '   Entrevistas a actores',
-                '   Mapeo participativo',
-                '   Observación en campo',
+                '   Encuestas a hogares',
+                '   Grupos focales',
+                '   Entrevistas a actores',
+                '   Mapeo participativo',
+                '   Observación en campo',
                 'Fase 3: Análisis',
-                '   Análisis cuantitativo',
-                '   Análisis cualitativo',
-                '   Triangulación de datos',
-                '   ID preliminar',
-                '   Elaboración Catálogo Hab.',
-                '   **Entrega Hito 2**',
+                '   Análisis cuantitativo',
+                '   Análisis cualitativo',
+                '   Triangulación de datos',
+                '   ID preliminar',
+                '   Elaboración Catálogo Hab.',
+                '   **Entrega Hito 2**',
                 'Fase 4: Validación',
-                '   Talleres de validación',
-                '   **Validación Hitos 3 y 4**',
-                '   **Entrega Hito 3**',
-                '   **Entrega Hito 4**',
-                '   Sesiones de co-creación',
+                '   Talleres de validación',
+                '   **Validación Hitos 3 y 4**',
+                '   **Entrega Hito 3**',
+                '   **Entrega Hito 4**',
+                '   Sesiones de co-creación',
                 'Fase 5: Diseño Final',
-                '   Desarrollo Planes Negocio',
-                '   Diseño Planes Formación',
-                '   Revisión interna',
-                '   **Entrega Hito 5**',
-                '   **Entrega Hito 6**',
+                '   Desarrollo Planes Negocio',
+                '   Diseño Planes Formación',
+                '   Revisión interna',
+                '   **Entrega Hito 5**',
+                '   **Entrega Hito 6**',
                 'Fase 6: Cierre',
-                '   Presentación final'
+                '   Presentación final'
             ],
             datasets: [{
                 label: 'Cronograma',
@@ -628,18 +438,20 @@
                     'rgba(148, 210, 189, 0.4)',
                     palette.blueLight, palette.blueLight, palette.blueLight, palette.blueLight, palette.blueLight, palette.redDark,
                     'rgba(233, 216, 166, 0.4)',
-                    palette.yellow, palette.redDark, palette.redDark, palette.redDark, palette.yellow,
+                    palette.yellow, palette.yellow, palette.yellow, palette.yellow, palette.yellow,
                     'rgba(238, 155, 0, 0.4)',
-                    palette.orangeMid, palette.orangeMid, palette.orangeMid, palette.redDark, palette.redDark,
+                    palette.orangeMid, palette.orangeMid, palette.orangeMid, palette.orangeMid, palette.orangeMid,
                     'rgba(202, 103, 2, 0.4)',
-                    palette.orangeDark
+                    palette.orangeDark, palette.orangeDark, palette.orangeDark, palette.orangeDark, palette.orangeDark,
+                    'rgba(174, 32, 18, 0.4)',
+                    palette.redDark
                 ],
                 borderColor: 'rgba(0,0,0,0.1)',
                 borderWidth: 1,
-                barPercentage: 0.8,
-                categoryPercentage: 0.9,
+                barThickness: 'flex'
             }]
         };
+
         const ganttCtx = document.getElementById('ganttChart').getContext('2d');
         new Chart(ganttCtx, {
             type: 'bar',
@@ -647,31 +459,59 @@
             options: {
                 indexAxis: 'y',
                 maintainAspectRatio: false,
+                responsive: true,
                 scales: {
                     x: {
                         min: 0,
                         max: 200,
-                        title: {
-                            display: true,
-                            text: 'Días del Proyecto'
-                        }
+                        title: { display: true, text: 'Días' }
                     },
-                    y: {
-                        ticks: {
-                            autoSkip: false
-                        }
-                    }
+                    y: { stacked: true, grid: { display: true }, ticks: { font: { size: 10 } } }
                 },
                 plugins: {
                     legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            title: tooltipTitleCallback,
                             label: function(context) {
                                 const start = context.raw[0];
                                 const end = context.raw[1];
                                 const duration = end - start;
-                                return `Día ${start+1} a Día ${end+1} (Duración: ${duration} días)`;
+                                return `${context.label} (${duration} días)`;
+                            },
+                            title: tooltipTitleCallback
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Enfoque Metodológico (Gráfico de pastel)
+        const methodologyCtx = document.getElementById('methodologyChart').getContext('2d');
+        new Chart(methodologyCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Enfoque Cuantitativo (50%)', 'Enfoque Cualitativo (50%)'],
+                datasets: [{
+                    label: 'Distribución',
+                    data: [50, 50],
+                    backgroundColor: [palette.blueMid, palette.orangeMid],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.raw !== null) {
+                                    label += context.raw + '%';
+                                }
+                                return label;
                             }
                         }
                     }
@@ -679,58 +519,122 @@
             }
         });
 
-        const methodologyCtx = document.getElementById('methodologyChart').getContext('2d');
-        new Chart(methodologyCtx, {
-            type: 'doughnut',
-            data: {
-                // Estos números representan el peso porcentual de cada técnica
-                // Suman 100%
-                labels: ['Encuestas Cuantitativas', 'Grupos Focales (Cuali)', 'Entrevistas a Actores', 'Mapeo Participativo (PRA)'],
-                datasets: [{
-                    data: [40, 25, 20, 15],
-                    backgroundColor: [palette.blueDark, palette.blueMid, palette.yellow, palette.orangeMid]
-                }]
-            },
-            options: {
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom' },
-                    tooltip: { callbacks: { title: tooltipTitleCallback } }
-                }
-            }
-        });
-
+        // Gráfico de Resultados Esperados
         const outcomesCtx = document.getElementById('outcomesChart').getContext('2d');
         new Chart(outcomesCtx, {
-            type: 'doughnut',
+            type: 'bar',
             data: {
-                // Estos números representan una cantidad de productos o entregables.
-                // El 25 se repite para cada sección.
-                labels: ['Mapeo de Habilidades', 'Estudio de Mercado', 'Planes de Negocio', 'Planes de Formación'],
+                labels: ['Planes de Negocio', 'Planes de Formación', 'Mapeo de Habilidades', 'Estudio de Mercado', 'Ideas de Negocio'],
                 datasets: [{
-                    data: [30, 30, 20, 20],
-                    backgroundColor: [palette.blueLight, palette.orangeDark, palette.redDark, palette.blueDark]
+                    label: 'Productos Esperados',
+                    data: [5, 5, 1, 1, 7],
+                    backgroundColor: [
+                        palette.blueDark,
+                        palette.blueMid,
+                        palette.blueLight,
+                        palette.yellow,
+                        palette.orangeMid
+                    ],
+                    borderColor: 'rgba(0,0,0,0.1)',
+                    borderWidth: 1
                 }]
             },
             options: {
+                indexAxis: 'y',
                 maintainAspectRatio: false,
+                scales: {
+                    x: { beginAtZero: true }
+                },
                 plugins: {
-                    legend: { position: 'bottom' },
+                    legend: { display: false },
                     tooltip: { callbacks: { title: tooltipTitleCallback } }
                 }
             }
         });
 
+        // Lógica de carga de tablas desde Google Sheets
+        const loadSheetData = (sheetId, sheetName, range, targetId, headers, isCronograma) => {
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}&range=${encodeURIComponent(range)}&cachebust=${Date.now()}`;
+            const cellVal = c => (c ? (c.f ?? c.v ?? "") : "");
+            const spinner = document.getElementById(`spinner-${isCronograma ? 'cronograma' : 'ah'}`);
+            if (spinner) {
+                spinner.style.display = 'block';
+            }
+
+            fetch(url, { cache: "no-store" })
+                .then(r => r.text())
+                .then(txt => {
+                    const json = JSON.parse(txt.substring(txt.indexOf('{'), txt.lastIndexOf('}') + 1));
+                    const rows = json.table.rows || [];
+
+                    let html = `<table class="w-full text-sm text-left text-gray-500 rounded-lg">
+                                <thead class="bg-[#94d2bd] text-xs text-gray-700 uppercase">
+                                    <tr>
+                                        ${headers.map(h => `<th scope="col" class="px-6 py-3">${h}</th>`).join('')}
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700 leading-tight">`;
+
+                    rows.forEach((row) => {
+                        const c = row.c || [];
+                        const rowData = c.map(cellVal);
+                        if (!rowData[0]) return;
+
+                        let rowClasses = 'bg-white border-b odd:bg-white even:bg-gray-50 hover:bg-gray-100';
+                        if (rowData[0].toLowerCase().includes("total")) {
+                             rowClasses = 'bg-gray-100 font-bold text-gray-700 text-sm border-t';
+                        }
+                        
+                        html += `<tr class="${rowClasses}">`;
+                        rowData.forEach((cell, index) => {
+                            let cellClasses = 'px-6 py-3';
+                            if (isCronograma && index === 3) {
+                                cellClasses += ' text-center';
+                                cell = `<input type="checkbox" class="h-4 w-4 text-[#94d2bd] rounded focus:ring-[#94d2bd]">`;
+                            } else {
+                                cellClasses += ' text-left';
+                            }
+                            html += `<td class="${cellClasses}">${cell}</td>`;
+                        });
+                        html += `</tr>`;
+                    });
+
+                    html += `</tbody></table>`;
+                    document.getElementById(targetId).innerHTML = html;
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById(targetId).innerHTML =
+                        `<div class="p-4 text-red-600 text-sm">No se pudo cargar la tabla. Revisa el ID, hoja y rango.</div>`;
+                })
+                .finally(() => {
+                    const sp = document.getElementById(`spinner-${isCronograma ? 'cronograma' : 'ah'}`);
+                    if (sp) sp.style.display = 'none';
+                });
+        };
+
+        // Llama a las funciones para cargar las tablas cuando la página se carga
+        window.addEventListener('DOMContentLoaded', (event) => {
+            // Cronograma FUSAL
+            loadSheetData(
+                "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo",
+                "Resumen_Cronograma",
+                "A26:C35",
+                "tabla-cronograma",
+                ["Reuniones con FUSAL", "Fecha", "Distancia (días)", "Realizado"],
+                true
+            );
+
+            // Actividades e Hitos
+            loadSheetData(
+                "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo",
+                "Resumen_Cronograma",
+                "A5:F15",
+                "tabla-ah",
+                ["Actividades", "Duración (días)", "Inicio", "Fin", "Hito", "Días Meta"],
+                false
+            );
+        });
     </script>
-  
 </body>
 </html>
-
-
-
-
-
-
-
-
-
