@@ -168,97 +168,111 @@
             </div>
         </section>
         
-<!-- Bloque de Código para Tablas del Proyecto: REUNIONES FUSAL -->
-        <section class="mb-16 card p-8">
-    <h2 class="text-2xl font-bold text-[#005f73] mb-4 "> Reuniones propuestas FUSAL - TNS </h2>
-    <div class="overflow-x-auto rounded-lg shadow">
-        <table class="w-full text-sm text-left text-gray-500 rounded-lg shadow-md">
-            <thead class="bg-[#94d2bd] text-xs text-gray-700 uppercase bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3">Reuniones con FUSAL</th>
-                    <th scope="col" class="px-6 py-3">Fechas</th>
-                    <th scope="col" class="px-6 py-3">Distancia (días)</th>
-                    <th class="px-4 py-2 text-center">Realizada</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Primer reunión con FUSAL: contacto, documentos</td>
-                    <td class="px-4 py-2">5-sep-2025</td>
-                    <td class="px-4 py-2">-</td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox" checked>
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Segunda reunión con FUSAL: Instrumentos</td>
-                    <td class="px-4 py-2">19-sep-2025</td>
-                    <td class="px-4 py-2">14</td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Tercera reunión con FUSAL: Trabajo Campo</td>
-                    <td class="px-4 py-2">10-oct-2025</td>
-                    <td class="px-4 py-2">21</td>
-                   <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Cuarta reunión con FUSAL Preliminar Mapeo</td>
-                    <td class="px-4 py-2">24-oct-2025</td>
-                    <td class="px-4 py-2">14</td>
-                   <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Quinta reunión con FUSAL Oportunidades de mercado</td>
-                    <td class="px-4 py-2">7-nov-2025</td>
-                    <td class="px-4 py-2">14</td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Sexta reunión con FUSAL: Inicio Planes Negocio</td>
-                    <td class="px-4 py-2">21-nov-2025</td>
-                    <td class="px-4 py-2">14</td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Séptima reunión con FUSAL: Avance Planes Negocio *</td>
-                    <td class="px-4 py-2">5-dic-2025</td>
-                    <td class="px-4 py-2">14</td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Octava reunión con FUSAL: Inicio Planes Formación</td>
-                    <td class="px-4 py-2">16-ene-2026</td>
-                    <td class="px-4 py-2">42</td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td>
-                </tr>
-                <tr class="bg-white border-b hover:bg-gray-100">
-                    <td class="px-4 py-2">Entrega de Informe con copia de los productos finales a Technc</td>
-                    <td class="px-4 py-2">26-feb-2026</td>
-                    <td class="px-4 py-2">41</td>
-                    <td class="px-4 py-2 text-center">
-                        <input type="checkbox">
-                    </td> 
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <p class="text-right italic text-gray-500 mt-2">* Fin de año / inicio</p>
-</section>
+<!-- Bloque de Código para Tablas del Proyecto: REUNIONES FUSAL AHORA Tiempo REAL-->
+<!-- Bloque de Código para Tablas del Proyecto: CRONOGRAMA FUSAL -->
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronograma de Actividades FUSAL</title>
+    <!-- Incluyendo Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+    </style>
+</head>
+<body class="p-8">
+
+    <section id="cronograma-fusal" class="my-8">
+        <div class="container mx-auto px-4 py-6">
+            <!-- Contenedor principal de la tabla con el padding, la sombra y el fondo blanco -->
+            <div class="bg-white rounded-lg shadow-lg p-6 space-y-4">
+                <h2 class="text-2xl font-bold text-[#005f73]">
+                    Cronograma de actividades FUSAL
+                </h2>
+
+                <div id="tabla-cronograma" class="overflow-x-auto">
+                    <div id="spinner" class="p-4 text-sm text-gray-500">Cargando datos…</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 🔧 CONFIGURA AQUÍ
+        const SHEET_ID = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo"; // Tu ID de Google Sheets
+        const SHEET_NAME = "Resumen_Cronograma"; // Nombre de la hoja
+        const RANGE = "A26:C35"; // Rango de datos
+
+        // ✅ URL para obtener los datos
+        const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(RANGE)}&cachebust=${Date.now()}`;
+
+        // Función para extraer el valor formateado
+        const cellVal = c => (c ? (c.f ?? c.v ?? "") : "");
+
+        fetch(url, {
+                cache: "no-store"
+            })
+            .then(r => r.text())
+            .then(txt => {
+                const json = JSON.parse(txt.substring(47).slice(0, -2));
+                const rows = json.table.rows || [];
+
+                let html = `
+                    <table class="w-full text-sm text-left text-gray-500 rounded-lg">
+                        <thead class="bg-[#94d2bd] text-xs text-gray-700 uppercase">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 rounded-tl-lg">Reuniones con FUSAL</th>
+                                <th scope="col" class="px-6 py-3">Fecha</th>
+                                <th scope="col" class="px-6 py-3">Distancia (días)</th>
+                                <th scope="col" class="px-6 py-3 rounded-tr-lg">Realizado</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700 leading-tight">
+                `;
+
+                rows.forEach((row, index) => {
+                    const c = row.c || [];
+                    const actividad = cellVal(c[0]);
+                    const responsable = cellVal(c[1]);
+                    const fecha = cellVal(c[2]);
+
+                    if (!actividad) return;
+
+                    html += `
+                        <tr class="bg-white border-b odd:bg-white even:bg-gray-50 hover:bg-gray-100">
+                            <td class="px-6 py-3">${actividad}</td>
+                            <td class="px-6 py-3">${responsable}</td>
+                            <td class="px-6 py-3">${fecha}</td>
+                            <td class="px-6 py-3 text-center">
+                                <input type="checkbox" class="h-4 w-4 text-[#94d2bd] rounded focus:ring-[#94d2bd]">
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table>`;
+                document.getElementById("tabla-cronograma").innerHTML = html;
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById("tabla-cronograma").innerHTML =
+                    `<div class="p-4 text-red-600 text-sm">No se pudo cargar la tabla. Revisa el ID, hoja y rango.</div>`;
+            })
+            .finally(() => {
+                const sp = document.getElementById("spinner");
+                if (sp) sp.remove();
+            });
+    </script>
+</body>
+</html>
+<!-- Fin de Tabla -->
 
 <!-- Inicio de Tabla Resumen Actividades e Hitos -->
 <section id="actividades-hitos" class="mb-16 card p-8>
@@ -711,6 +725,7 @@
   
 </body>
 </html>
+
 
 
 
