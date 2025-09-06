@@ -292,7 +292,7 @@
       const rows = json.table.rows || [];
 
       let html = `
-        <table class="min-w-full bg-white border border-gray-200">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
           <thead>
             <tr class="bg-[#94d2bd] text-gray-800 text-sm">
               <th class="px-4 py-2 text-left font-semibold">Actividades</th>
@@ -475,7 +475,7 @@
             type: 'bar',
             data: {
                 labels: [
-                    'Form. Encuesta a Hogares',
+                    //'Form. Encuesta a Hogares', Lo eliminamos de la vista web
                     'Form. Encuesta a Personas',
                     'Guía Entrevista a Empresas',
                     'Guía Grupo focales',
@@ -484,9 +484,9 @@
                 ],
                 datasets: [{
                     label: '# Esperado',
-                    data: [59, 60, 12, 4, 6, 1],
+                    data: [60, 12, 4, 6, 1],
                     backgroundColor: [
-                        palette.blueDark,
+                        //palette.blueDark, Elinamos encuesta hogar
                         palette.blueMid,
                         palette.blueLight,
                         palette.yellow,
@@ -515,7 +515,7 @@
                 }
             }
         });
-
+// Estas son Constante para Gráfico días de trabajo por Actividad
         const daysCtx = document.getElementById('daysChart').getContext('2d');
         new Chart(daysCtx, {
             type: 'bar',
@@ -705,8 +705,7 @@
         });
 
     </script>
-    
-    // Inicio de Tabla Resumen actividades Hitos //////////////////////////////////////////
-   
+  
 </body>
 </html>
+
