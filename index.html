@@ -322,12 +322,12 @@
         if (!esTotal) {
           html += `
             <tr class="border-b odd:bg-white even:bg-gray-50 hover:bg-gray-100">
-              <td class="px-4 py-1">${actividad}</td>
-              <td class="px-2 py-1 text-center ${Number(dur) ? 'font-semibold' : ''}">${dur}</td>
-              <td class="px-2 py-1 text-center">${ini}</td>
-              <td class="px-2 py-1 text-center">${fin}</td>
-              <td class="px-2 py-1 text-center ${/Hito/i.test(hito) ? 'font-semibold' : 'italic'}">${hito}</td>
-              <td class="px-2 py-1 text-center">${meta}</td>
+              <td class="px-4 py-3">${actividad}</td>
+              <td class="px-2 py-3 text-center ${Number(dur) ? 'font-semibold' : ''}">${dur}</td>
+              <td class="px-2 py-3 text-center">${ini}</td>
+              <td class="px-2 py-3 text-center">${fin}</td>
+              <td class="px-2 py-3 text-center ${/Hito/i.test(hito) ? 'font-semibold' : 'italic'}">${hito}</td>
+              <td class="px-2 py-3 text-center">${meta}</td>
             </tr>
           `;
         }
@@ -708,6 +708,7 @@
   
 </body>
 </html>
+
 
 
 
