@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infografía del Calendario</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .header-title {
+            color: #1a73e8;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th, .table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .table th {
+            background-color: #e5e7eb;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        .table tr:last-child td {
+            border-bottom: none;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1765cc;
+        }
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+        .loading-text, .error-text {
+            text-align: center;
+            font-size: 1.25rem;
+            margin-top: 2rem;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">Cronograma Detallado de Actividades</div>
+    <div class="loading-text" id="loading">Cargando datos...</div>
+    <div class="error-text hidden" id="error">
+        Hubo un error al cargar los datos. Por favor, asegúrate de que el enlace de la hoja de cálculo sea correcto y de que el archivo es público.
+    </div>
+    
+    <div class="table-container hidden" id="data-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Descripción del hito</th>
+                    <!-- Se ha ocultado la columna FASES -->
+                    <th>Categoría</th>
+                    <th>Responsable</th>
+                    <th class="text-center">Progreso (%)</th>
+                    <th class="text-center">Inicio</th>
+                    <th class="text-center">Fin</th>
+                    <th class="text-center">Días (#)</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="btn-group">
+        <button class="btn btn-secondary" onclick="window.location.href='index.html'">Regresar a la Infografía Principal</button>
+        <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=840692081#gid=840692081" target="_blank" class="btn btn-primary">Ir a la Hoja de Datos</a>
+    </div>
+</div>
+
+<script>
+    const SPREADSHEET_ID = '1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo'; 
+    const SHEET_NAME = 'Calendario'; 
+    const RANGE = 'A:H'; 
+    
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const dataContainerEl = document.getElementById('data-container');
+    const tableBody = document.getElementById('table-body');
+
+    // Función para obtener los datos de Google Sheets
+    async function fetchSheetData() {
+        try {
+            loadingEl.classList.remove('hidden');
+            dataContainerEl.classList.add('hidden');
+            errorEl.classList.add('hidden');
+
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
+            
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Error en la red o en el enlace de la hoja de cálculo.');
+            }
+            const text = await response.text();
+
+            const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+            const data = JSON.parse(jsonText);
+            
+            return data.table.rows;
+
+        } catch (error) {
+            console.error('Fetch error:', error);
+            loadingEl.classList.add('hidden');
+            errorEl.classList.remove('hidden');
+            return [];
+        }
+    }
+    
+    // Función para limpiar y extraer los valores de las celdas
+    function cleanData(rows) {
+        if (!rows || rows.length === 0) {
+            return [];
+        }
+        return rows.map(row => {
+            return row.c.map(cell => {
+                // Utiliza 'f' para valores formateados si están disponibles, si no 'v'
+                if (cell && cell.f !== undefined) {
+                    return cell.f;
+                }
+                if (cell && cell.v !== undefined) {
+                    return cell.v;
+                }
+                return '';
+            });
+        });
+    }
+
+    // Función para renderizar la tabla con los datos
+    function renderTable(rows) {
+        tableBody.innerHTML = '';
+        
+        const dataRows = cleanData(rows);
+        
+        if (dataRows.length > 0) {
+            // Omitir la primera fila (encabezados) del Google Sheet
+            const contentRows = dataRows.slice(1);
+
+            contentRows.forEach(row => {
+                const tr = document.createElement('tr');
+                
+                // Aplicar estilos según la categoría (índice 2)
+                const categoria = row[2];
+                if (categoria === 'FUSAL') {
+                    tr.classList.add('text-blue-900', 'font-bold');
+                } else if (categoria === 'Comunidad') {
+                    tr.classList.add('text-green-600');
+                }
+
+                // Renderizar las celdas, omitiendo la columna FASES (índice 1)
+                // y aplicando los formatos y estilos solicitados
+                row.forEach((cellValue, cellIndex) => {
+                    if (cellIndex === 1) return; // Omitir la columna FASES
+
+                    const td = document.createElement('td');
+                    td.textContent = cellValue;
+                    
+                    // Aplicar formato de porcentaje a la columna Progreso (índice 4)
+                    if (cellIndex === 4 && typeof cellValue === 'number') {
+                        td.textContent = `${Math.round(cellValue * 100)}%`;
+                        td.classList.add('text-center');
+                    }
+                    
+                    // Formatear las columnas de fecha (índices 5 y 6)
+                    if (cellIndex === 5 || cellIndex === 6) {
+                        const dateMatch = String(cellValue).match(/Date\((\d+),(\d+),(\d+)\)/);
+                        if (dateMatch) {
+                            const year = parseInt(dateMatch[1]);
+                            const month = parseInt(dateMatch[2]);
+                            const day = parseInt(dateMatch[3]);
+                            const date = new Date(year, month, day);
+                            td.textContent = date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                        }
+                        td.classList.add('text-center');
+                    }
+
+                    // Centrar la columna Días (índice 7)
+                    if (cellIndex === 7) {
+                        td.classList.add('text-center');
+                    }
+
+                    tr.appendChild(td);
+                });
+                tableBody.appendChild(tr);
+            });
+            loadingEl.classList.add('hidden');
+            dataContainerEl.classList.remove('hidden');
+        } else {
+            loadingEl.classList.add('hidden');
+            errorEl.textContent = 'No se encontraron datos en la hoja de cálculo.';
+            errorEl.classList.remove('hidden');
+        }
+    }
+
+    async function init() {
+        const rows = await fetchSheetData();
+        renderTable(rows);
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
