@@ -38,7 +38,7 @@
             border-collapse: collapse;
         }
         .table th, .table td {
-            padding: 1rem;
+            padding: 0.7rem;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
         }
@@ -197,6 +197,8 @@
                     tr.classList.add('text-blue-900', 'font-bold');
                 } else if (categoria === 'Comunidad') {
                     tr.classList.add('text-green-600');
+                } else if (categoria === 'Fases') { // Nueva condición para Fases
+                    tr.classList.add('font-bold', 'bg-gray-200');
                 }
 
                 // Renderizar las celdas, omitiendo la columna FASES (índice 1)
@@ -207,7 +209,7 @@
                     const td = document.createElement('td');
                     td.textContent = cellValue;
                     
-                    // Aplicar formato de porcentaje a la columna Progreso (índice 4)
+                    // Aplicar formato de porcentaje y centrar la columna Progreso (índice 4)
                     if (cellIndex === 4 && typeof cellValue === 'number') {
                         td.textContent = `${Math.round(cellValue * 100)}%`;
                         td.classList.add('text-center');
