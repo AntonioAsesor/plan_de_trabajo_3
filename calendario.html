@@ -53,8 +53,8 @@
         .table td {
             padding: 0.75rem;
             text-align: left;
-            padding: 0.5rem; /* Ajuste para un espaciado más pequeño */
-            border-bottom: 1px solid #e5e7eb;
+            padding: 0.2rem; /* Ajuste para un espaciado más pequeño */
+            border-bottom: 2px solid #e5e7eb;
         }
         .table tr:last-child td {
             border-bottom: none;
@@ -103,7 +103,21 @@
     <div class="error-text hidden" id="error">
         Hubo un error al cargar los datos. Por favor, asegúrate de que el enlace de la hoja de cálculo sea correcto y de que el archivo es público.
     </div>
-    
+    <!-- AGREGADO: Controles para filtros y búsqueda -->
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        <select id="category-filter" class="w-full md:w-auto p-2.5 rounded-lg border border-gray-300 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+            <option value="all">Todas las Categorías</option>
+            <option value="Comunidad">Comunidad</option>
+            <option value="ASR">ASR</option>
+            <option value="Reunión">Reunión</option>
+            <option value="FUSAL">Fusal</option>
+            <option value="Hito">Hito</option>
+            <option value="Fase">Fase</option>
+        </select>
+        <input type="text" id="search-bar" placeholder="Buscar..." class="w-full md:w-auto p-2.5 rounded-lg border border-gray-300 bg-gray-50 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+    </div>
+    <!-- FIN AGREGADO -->
+
     <div class="table-container hidden" id="data-container">
         <table class="table">
             <thead>
@@ -198,9 +212,13 @@
 
             contentRows.forEach(row => {
                 const tr = document.createElement('tr');
-                
-                // Aplicar estilos según la categoría (índice 2)
+            // Aplicar estilos según la categoría (índice 2)
                 const categoria = row[2];
+            // AGREGADO: Asignar un atributo de dato para el filtro
+                tr.dataset.category = categoria;
+           // FIN AGREGADO
+                
+                // Aplicar estilos según la categoría
                 if (categoria === 'FUSAL') {
                     tr.classList.add('text-blue-900', 'font-bold');
                 } else if (categoria === 'Comunidad') {
@@ -254,6 +272,34 @@
         }
     }
 
+        // AGREGADO: Función para filtrar y buscar en la tabla
+    function filterAndSearchTable() {
+        const selectedCategory = categoryFilter.value;
+        const searchTerm = searchBar.value.toLowerCase();
+        
+        const rows = tableBody.querySelectorAll('tr');
+
+        rows.forEach(row => {
+            const rowText = row.textContent.toLowerCase();
+            const rowCategory = row.dataset.category;
+            
+            // Condición para mostrar la fila: debe coincidir con el filtro de categoría Y la búsqueda
+            const categoryMatches = selectedCategory === 'all' || rowCategory === selectedCategory;
+            const searchMatches = rowText.includes(searchTerm);
+
+            if (categoryMatches && searchMatches) {
+                row.style.display = ''; // Muestra la fila
+            } else {
+                row.style.display = 'none'; // Oculta la fila
+            }
+        });
+    }
+
+    // AGREGADO: Eventos para escuchar los cambios en los filtros y la barra de búsqueda
+    categoryFilter.addEventListener('change', filterAndSearchTable);
+    searchBar.addEventListener('input', filterAndSearchTable);
+    // FIN AGREGADO
+    
     async function init() {
         const rows = await fetchSheetData();
         renderTable(rows);
