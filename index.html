@@ -14,7 +14,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #f0f4f8;
         }
-        .chart-container {
+        .chart-container { 
             position: relative;
             width: 100%;
             max-width: 1200px;
@@ -77,23 +77,33 @@
                 <p class="text-gray-500">Hitos Clave</p>
             </div>
         </section>
-
+        <!-- Gráfico Fases del Proyecto -->
         <section class="mb-16 card p-8">
             <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Fases del Proyecto</h2>
             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">El proyecto se divide en siete fases estratégicas, desde la planificación inicial hasta la entrega de los planes finales de negocio y formación.</p>
             <div class="chart-container h-[250px] max-h-[40vh]">
                 <canvas id="phasesChart"></canvas>
             </div>
-        </section>
+        <!-- Botón para el plan de trabajo que lleva al documento de Google Sheets -->
+            <div class="text-center mt-8">
+                <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" target="_blank" class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
+                    Ir a Hoja origen de Plan de trabajo
+                    </a>
+                <a href="calendario.html" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+                Ir al Calendario Detallado
+                </a>
+            </div>
 
+        </section>
+ <!-- Gráfico Días de trabajo por tipo de actividad -->
         <section class="mb-16 card p-8">
-            <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Días de Trabajo por Actividad</h2>
+            <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Días por Tipo de Actividad</h2>
             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Distribución de los días de trabajo dedicados a las principales actividades del proyecto.</p>
             <div class="chart-container h-[250px] max-h-[40vh]">
                 <canvas id="daysChart"></canvas>
             </div>
         </section>
-
+<!-- Instrumentos de Investigación y Consultas -->
         <section class="mb-16 card p-8">
             <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Instrumentos de Investigación y Consultas</h2>
             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Número esperado de instrumentos a aplicar durante las fases de recolección de información y consultas.</p>
@@ -107,7 +117,7 @@
                 </a>
             </div>
         </section>
-
+<!-- Tarjetas de Hitos y Entregables Clave -->
         <section class="mb-16">
             <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Hitos y Entregables Clave</h2>
             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Cada fase culmina con la entrega de productos específicos (hitos) que marcan el progreso del proyecto y proporcionan insumos valiosos para las siguientes etapas.</p>
@@ -150,26 +160,25 @@
                 </div>
             </div>
         </section>
-
+<!-- Cronograma Detallado de Actividades OCULTAR 
         <section class="card p-8 mb-16">
             <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Cronograma Detallado de Actividades</h2>
             <p class="text-center text-gray-600 mb-8 max-w-2xl mx-auto">Esta visualización tipo Gantt muestra la duración y secuencia de cada actividad a lo largo de los 200 días (máximo) del proyecto, permitiendo un seguimiento detallado del progreso.</p>
             <div class="gantt-chart-container">
                 <canvas id="ganttChart"></canvas>
             </div>
-            <!-- Botón para el plan de trabajo que lleva al documento de Google Sheets -->
+ Botón para el plan de trabajo que lleva al documento de Google Sheets
             <div class="text-center mt-8">
                 <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" target="_blank" class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
                     Ir a Hoja origen de Plan de trabajo
                     </a>
-<a href="calendario.html" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
-Ir al Calendario Detallado
-</a>
-
+                <a href="calendario.html" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+                Ir al Calendario Detallado
+                </a>
             </div>
-        </section>
+        </section> -->
 
-        <!-- Bloque de Código para Tablas del Proyecto: REUNIONES FUSAL Y CRONOGRAMA FUSAL -->
+     <!-- Bloque de Código para Tablas del Proyecto: REUNIONES FUSAL Y CRONOGRAMA FUSAL -->
         <section id="cronograma-fusal" class="my-8">
             <div class="container mx-auto px-4 py-6">
                 <!-- Contenedor principal de la tabla con el padding, la sombra y el fondo blanco -->
@@ -199,7 +208,7 @@ Ir al Calendario Detallado
                 </div>
             </div>
         </section>
-
+        <!-- Enfoque Metodológico y Resultados Esperados-->
         <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             <div class="card p-8">
                 <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Enfoque Metodológico</h2>
@@ -239,7 +248,7 @@ Ir al Calendario Detallado
         </section>
 
         <footer class="text-center mt-16 pt-8 border-t border-gray-300">
-            <p class="text-gray-500">Infografía generada por asesor.negocio.ni@gmail.com para la propuesta de consultoría en Villas La Concordia.</p>
+            <p class="text-gray-500">Infografía diseñada por asesor.negocio.ni@gmail.com para la propuesta de consultoría en Villas La Concordia.</p>
             <p class="text-sm text-gray-400">Referencia: RQ8299</p>
         </footer>
     </div>
@@ -642,4 +651,3 @@ Ir al Calendario Detallado
     </script>
 </body>
 </html>
-
