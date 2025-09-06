@@ -698,6 +698,7 @@
     </script>
     
     // Inicio de Tabla Resumen actividades Hitos //////////////////////////////////////////
+<!-- Inicio de Tabla Resumen Actividades e Hitos -->
 <section id="actividades-hitos" class="my-8">
   <div class="container mx-auto px-4 py-6">
     <h2 class="text-2xl font-bold text-[#005f73] mb-4">
@@ -712,24 +713,22 @@
 
 <script>
   // 🔧 CONFIGURA AQUÍ
-  const SHEET_ID   = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo";   // <- tu ID
+  const SHEET_ID   = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo";   // <- tu ID de Google Sheets
   const SHEET_NAME = "Resumen_Cronograma";                  // <- nombre exacto de la hoja
-  const RANGE      = "A5:F14";                              // <- ajusta el rango según tus filas
+  const RANGE      = "A5:F14";                              // <- rango de datos reales
 
-  // Endpoint GViz (JSON) con rango
-  const url = `https://docs.google.com/spreadsheets/d/${1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(Resumen_Cronograma)}&range=${encodeURIComponent(A4:F4)}&cachebust=${Date.now()}`;
+  // ✅ URL corregida usando las variables correctas
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${encodeURIComponent(RANGE)}&cachebust=${Date.now()}`;
 
-  // Utilidad: tomar valor formateado "f" o valor "v"
+  // Función para extraer el valor formateado
   const cellVal = c => (c ? (c.f ?? c.v ?? "") : "");
 
   fetch(url, { cache: "no-store" })
     .then(r => r.text())
     .then(txt => {
-      // Limpia el prefijo/sufijo de GViz
       const json = JSON.parse(txt.substring(47).slice(0, -2));
       const rows = json.table.rows || [];
 
-      // Construir tabla
       let html = `
         <table class="min-w-full bg-white border border-gray-200">
           <thead>
@@ -754,10 +753,8 @@
         const hito      = cellVal(c[4]);
         const meta      = cellVal(c[5]);
 
-        // Salta filas vacías
         if (!actividad) return;
 
-        // Si la fila es el TOTAL, la mandamos al tfoot más abajo
         const esTotal = actividad.toLowerCase().includes("total");
 
         if (!esTotal) {
@@ -774,11 +771,9 @@
         }
       });
 
-      html += `
-          </tbody>
-      `;
+      html += `</tbody>`;
 
-      // Construye el pie (Total) tomando la última fila con "Total" si existe
+      // Total si existe
       const totalRow = rows.slice().reverse().find(r => (r.c?.[0]?.v ?? "").toString().toLowerCase().includes("total"));
       if (totalRow) {
         const c = totalRow.c || [];
@@ -797,7 +792,6 @@
       }
 
       html += `</table>`;
-
       document.getElementById("tabla-ah").innerHTML = html;
     })
     .catch(err => {
@@ -810,10 +804,11 @@
       if (sp) sp.remove();
     });
 </script>
-
+<!-- Fin de Tabla -->
     
 </body>
 </html>
+
 
 
 
