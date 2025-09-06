@@ -32,6 +32,8 @@
         }
         .table-container {
             overflow-x: auto;
+            overflow-y: auto;
+            max-height: 70vh; /* Ajusta la altura máxima para que se active el scroll */
         }
         .table {
             width: 100%;
@@ -109,10 +111,10 @@
                     <!-- Se ha ocultado la columna FASES -->
                     <th>Categoría</th>
                     <th>Responsable</th>
-                    <th class="text-center">Progreso (%)</th>
+                    <th class="text-center">Progreso</th>
                     <th class="text-center">Inicio</th>
                     <th class="text-center">Fin</th>
-                    <th class="text-center">Días (#)</th>
+                    <th class="text-center">Días</th>
                 </tr>
             </thead>
             <tbody id="table-body">
