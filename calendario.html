@@ -39,8 +39,12 @@
         }
         .table th, .table td {
             padding: 0.7rem;
-            text-align: left;
+            text-align: center;
             border-bottom: 1px solid #e5e7eb;
+            position: sticky; /* Agrega esta línea */
+            top: 0;          /* Y esta línea */
+            background-color: #e5e7eb; /* ¡Importante! Asegúrate de que tenga un color de fondo */
+            z-index: 10;     /* Opcional: para asegurarte de que quede por encima del contenido */
         }
         .table th {
             background-color: #e5e7eb;
@@ -100,7 +104,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Descripción del hito</th>
+                    <th>Descripción de Actividades e Hitos</th>
                     <!-- Se ha ocultado la columna FASES -->
                     <th>Categoría</th>
                     <th>Responsable</th>
