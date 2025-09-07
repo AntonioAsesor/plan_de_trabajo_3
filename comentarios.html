@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comentarios y Observaciones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #334155;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            color: #334155;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #0a9396;
+            box-shadow: 0 0 0 3px rgba(10, 147, 150, 0.2);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <section class="card p-8 w-full max-w-2xl">
+        <h2 class="text-3xl font-bold text-center mb-2 text-[#005f73]">Tus Comentarios</h2>
+        <p class="text-center text-gray-600 mb-8 max-w-prose mx-auto">
+            Valoramos tu opinión. Por favor, utiliza este formulario para enviarnos tus comentarios y observaciones sobre la Consultoría. Sea específico, claro y directo.
+        </p>
+
+        <form id="commentForm" class="space-y-6">
+            <div>
+                <label for="persona" class="block text-sm font-medium text-gray-700 mb-1">Nombre y Apellido:</label>
+                <input type="text" id="persona" name="persona" required class="form-input" placeholder="Tu nombre completo">
+            </div>
+
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email:</label>
+                <input type="email" id="email" name="email" required class="form-input" placeholder="tu.correo@ejemplo.com">
+            </div>
+
+            <div>
+                <label for="tema" class="block text-sm font-medium text-gray-700 mb-1">Tema:</label>
+                <input type="text" id="tema" name="tema" required class="form-input" placeholder="Ej. Gráfico de Fases del Proyecto">
+            </div>
+
+            <div>
+                <label for="comentario" class="block text-sm font-medium text-gray-700 mb-1">Comentario:</label>
+                <textarea id="comentario" name="comentario" rows="5" required class="form-input" placeholder="Escribe tus observaciones aquí..."></textarea>
+            </div>
+            
+            <div class="flex justify-center mt-6">
+                <button type="submit" class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
+                    Enviar Comentario
+                </button>
+            </div>
+        </form>
+
+        <!-- Mensajes de estado -->
+        <div id="statusMessage" class="mt-4 text-center"></div>
+
+    </section>
+
+    <script>
+        document.getElementById('commentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = 'Enviando comentario...';
+            statusMessage.className = 'mt-4 text-center text-blue-500';
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            // TODO: REEMPLAZA ESTA URL CON LA URL DE TU SCRIPT DE GOOGLE APPS
+            //
+            // Pasos para obtener la URL:
+            // 1. Ve a tu proyecto de Google Apps Script.
+            // 2. Haz clic en "Implementar" > "Nueva implementación".
+            // 3. Selecciona el tipo de "Aplicación web".
+            // 4. Configura el acceso a "Cualquier persona".
+            // 5. Copia la URL que se genere y pégala aquí.
+            //
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycby4yeYzhiItlz9X70EI1uNI1jpZ9dbeZyUmsirw-oVuQWK-RuvqIyMx9agossx5kplSNg/exec'; 
+          
+            try {
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams(data).toString()
+                });
+
+                statusMessage.textContent = '¡Comentario enviado con éxito! Gracias por tu aporte.';
+                statusMessage.className = 'mt-4 text-center text-green-500';
+                form.reset();
+            } catch (error) {
+                console.error('Error al enviar el formulario:', error);
+                statusMessage.textContent = 'Ocurrió un error. Por favor, inténtalo de nuevo más tarde.';
+                statusMessage.className = 'mt-4 text-center text-red-500';
+            }
+        });
+    </script>
+
+</body>
+</html>
