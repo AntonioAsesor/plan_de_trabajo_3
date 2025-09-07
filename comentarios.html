@@ -72,7 +72,16 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
         // Inicializa Firebase
-        const app = initializeApp(firebaseConfig);
+        let app;
+        try {
+            app = initializeApp(firebaseConfig);
+        } catch (e) {
+            console.error("Error al inicializar Firebase. Revisa tu configuración.", e);
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = 'Error: No se pudo conectar a la base de datos.';
+            messageBox.className = 'text-center text-red-500 bg-red-100 p-3 rounded-md block';
+        }
+        
         const db = getFirestore(app);
         const auth = getAuth(app);
 
