@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración de Comentarios</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #334155;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body class="p-8">
+
+    <section class="max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8">
+            <h1 class="text-3xl font-bold text-[#005f73] mb-4 md:mb-0">Panel de Administración de Comentarios</h1>
+            <button id="downloadBtn" class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-2 px-4 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105">
+                Descargar en CSV
+            </button>
+        </div>
+
+        <div id="statusMessage" class="text-center text-blue-500 mb-4">Cargando comentarios...</div>
+        
+        <div class="card p-4 overflow-x-auto">
+            <table id="commentsTable">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Tema</th>
+                        <th>Comentario</th>
+                        <th>Fecha y Hora</th>
+                    </tr>
+                </thead>
+                <tbody id="commentsBody">
+                    <!-- Los comentarios se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Importa Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, getDocs, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Configuración de Firebase, provista automáticamente por el entorno
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Inicializa Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+        
+        setLogLevel('debug');
+
+        // Autenticación de usuario
+        async function authenticateUser() {
+            try {
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                return auth.currentUser;
+            } catch (error) {
+                console.error("Error de autenticación:", error);
+                document.getElementById('statusMessage').textContent = 'Error de autenticación. No se puede cargar la información.';
+                return null;
+            }
+        }
+
+        async function loadComments() {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = 'Cargando comentarios...';
+            
+            const user = await authenticateUser();
+            if (!user) {
+                return;
+            }
+
+            const commentsBody = document.getElementById('commentsBody');
+            commentsBody.innerHTML = '';
+            let allComments = [];
+
+            try {
+                // La ubicación de la colección es privada, lo que asegura que solo tú (con tu token de autenticación) puedas acceder
+                const commentsCollectionRef = collection(db, `artifacts/${appId}/users/${user.uid}/comments`);
+                const querySnapshot = await getDocs(commentsCollectionRef);
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const timestamp = data.timestamp.toDate().toLocaleString(); // Convierte la marca de tiempo a un formato legible
+                    allComments.push({
+                        nombre: data.persona,
+                        email: data.email,
+                        tema: data.tema,
+                        comentario: data.comentario,
+                        fecha: timestamp
+                    });
+                });
+                
+                // Ordena los comentarios por fecha, del más reciente al más antiguo
+                allComments.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+                if (allComments.length === 0) {
+                    statusMessage.textContent = 'Aún no hay comentarios.';
+                } else {
+                    allComments.forEach(comment => {
+                        const row = commentsBody.insertRow();
+                        row.innerHTML = `
+                            <td>${comment.nombre}</td>
+                            <td>${comment.email}</td>
+                            <td>${comment.tema}</td>
+                            <td>${comment.comentario}</td>
+                            <td>${comment.fecha}</td>
+                        `;
+                    });
+                    statusMessage.textContent = `Se encontraron ${allComments.length} comentarios.`;
+                }
+
+            } catch (error) {
+                console.error('Error al cargar los comentarios:', error);
+                statusMessage.textContent = 'Ocurrió un error al cargar los comentarios. Por favor, revisa la consola.';
+            }
+
+            // Descargar CSV
+            document.getElementById('downloadBtn').addEventListener('click', () => {
+                const header = ["Nombre", "Email", "Tema", "Comentario", "Fecha y Hora"];
+                const data = allComments.map(c => [c.nombre, c.email, c.tema, c.comentario, c.fecha]);
+                const csvContent = "data:text/csv;charset=utf-8," + [
+                    header.join(","),
+                    ...data.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(","))
+                ].join("\n");
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "comentarios.csv");
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        }
+        
+        loadComments();
+    </script>
+</body>
+</html>
