@@ -29,8 +29,8 @@
 <body class="flex items-center justify-center min-h-screen p-4">
 
     <div class="w-full max-w-2xl card p-8">
-        <h1 class="text-3xl font-bold text-[#005f73] text-center mb-6">Déjanos tu Comentario</h1>
-        <p class="text-center text-gray-600 mb-8">Tu opinión es importante para nosotros. Por favor, rellena el formulario.</p>
+        <h1 class="text-3xl font-bold text-[#005f73] text-center mb-6">Déjanos tus Comentarios</h1>
+        <p class="text-center text-gray-600 mb-8">Tu opinión es importante para nosotros. Por favor, rellena el formulario con un mensaje claro y conciso.</p>
 
         <form id="commentForm" class="space-y-6">
             <div>
@@ -71,11 +71,14 @@
         const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-        // Añade el projectId a la configuración antes de inicializar la app
+        // Construye la configuración, añadiendo el projectId y omitiendo el apiKey si es un placeholder
         const firebaseConfig = {
             ...firebaseConfigFromEnv,
             projectId: appIdFromEnv
         };
+        if (firebaseConfig.apiKey && firebaseConfig.apiKey.includes('YOUR_API_KEY')) {
+            delete firebaseConfig.apiKey;
+        }
 
         // Inicializa Firebase
         let app;
