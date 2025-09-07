@@ -167,15 +167,6 @@
             <div class="gantt-chart-container">
                 <canvas id="ganttChart"></canvas>
             </div>
-<!-- Botón para el plan de trabajo que lleva al documento de Google Sheets -->
-            <div class="text-center mt-8">
-                <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" target="_blank" class="bg-[#0a9396] hover:bg-[#005f73] text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-300 transform hover:scale-105 inline-block focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#0a9396]">
-                    Ir a Hoja origen de Plan de trabajo
-                    </a>
-                <a href="calendario.html" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
-                Ir al Calendario Detallado
-                </a>
-            </div>
         </section> 
 
      <!-- Bloque de Código para Tablas del Proyecto: REUNIONES FUSAL Y CRONOGRAMA FUSAL -->
@@ -396,108 +387,6 @@
             }
         });
 
-        // Gráfico de Cronograma (Gantt)
-        const ganttData = {
-            labels: [
-                'Fase 1: Planificación',
-                '   Revisión documental',
-                '   Diseño de instrumentos',
-                '   Capacitación de equipo',
-                '   Coordinación logística',
-                '   **Entrega Hito 1**',
-                'Fase 2: Recolección',
-                '   Encuestas a hogares',
-                '   Grupos focales',
-                '   Entrevistas a actores',
-                '   Mapeo participativo',
-                '   Observación en campo',
-                'Fase 3: Análisis',
-                '   Análisis cuantitativo',
-                '   Análisis cualitativo',
-                '   Triangulación de datos',
-                '   ID preliminar',
-                '   Elaboración Catálogo Hab.',
-                '   **Entrega Hito 2**',
-                'Fase 4: Validación',
-                '   Talleres de validación',
-                '   **Validación Hitos 3 y 4**',
-                '   **Entrega Hito 3**',
-                '   **Entrega Hito 4**',
-                '   Sesiones de co-creación',
-                'Fase 5: Diseño Final',
-                '   Desarrollo Planes Negocio',
-                '   Diseño Planes Formación',
-                '   Revisión interna',
-                '   **Entrega Hito 5**',
-                '   **Entrega Hito 6**',
-                'Fase 6: Cierre',
-                '   Presentación final'
-            ],
-            datasets: [{
-                label: 'Cronograma',
-                data: [
-                    [0, 15], [0, 5], [3, 12], [9, 14], [0, 15], [14, 15],
-                    [15, 89], [15, 68], [24, 70], [29, 75], [38, 89], [15, 89],
-                    [60, 113], [60, 108], [64, 110], [67, 113], [67, 113], [67, 74], [73, 74],
-                    [105, 146], [105, 117], [115, 119], [118, 119], [118, 119], [119, 146],
-                    [146, 198], [146, 190], [146, 190], [190, 198], [198, 199], [198, 199],
-                    [198, 199], [198, 199],
-                ],
-                backgroundColor: [
-                    'rgba(0, 95, 115, 0.4)',
-                    palette.blueDark, palette.blueDark, palette.blueDark, palette.blueDark, palette.redDark,
-                    'rgba(10, 147, 150, 0.4)',
-                    palette.blueMid, palette.blueMid, palette.blueMid, palette.blueMid, palette.blueMid,
-                    'rgba(148, 210, 189, 0.4)',
-                    palette.blueLight, palette.blueLight, palette.blueLight, palette.blueLight, palette.blueLight, palette.redDark,
-                    'rgba(233, 216, 166, 0.4)',
-                    palette.yellow, palette.yellow, palette.yellow, palette.yellow, palette.yellow,
-                    'rgba(238, 155, 0, 0.4)',
-                    palette.orangeMid, palette.orangeMid, palette.orangeMid, palette.orangeMid, palette.orangeMid,
-                    'rgba(202, 103, 2, 0.4)',
-                    palette.orangeDark, palette.orangeDark, palette.orangeDark, palette.orangeDark, palette.orangeDark,
-                    'rgba(174, 32, 18, 0.4)',
-                    palette.redDark
-                ],
-                borderColor: 'rgba(0,0,0,0.1)',
-                borderWidth: 1,
-                barThickness: 'flex'
-            }]
-        };
-
-        const ganttCtx = document.getElementById('ganttChart').getContext('2d');
-        new Chart(ganttCtx, {
-            type: 'bar',
-            data: ganttData,
-            options: {
-                indexAxis: 'y',
-                maintainAspectRatio: false,
-                responsive: true,
-                scales: {
-                    x: {
-                        min: 0,
-                        max: 200,
-                        title: { display: true, text: 'Días' }
-                    },
-                    y: { stacked: true, grid: { display: true }, ticks: { font: { size: 10 } } }
-                },
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const start = context.raw[0];
-                                const end = context.raw[1];
-                                const duration = end - start;
-                                return `${context.label} (${duration} días)`;
-                            },
-                            title: tooltipTitleCallback
-                        }
-                    }
-                }
-            }
-        });
-
         // Gráfico de Enfoque Metodológico (Gráfico de pastel)
         const methodologyCtx = document.getElementById('methodologyChart').getContext('2d');
         new Chart(methodologyCtx, {
@@ -651,4 +540,5 @@
     </script>
 </body>
 </html>
+
 
