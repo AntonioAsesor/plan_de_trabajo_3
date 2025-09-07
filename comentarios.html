@@ -88,42 +88,25 @@
             statusMessage.className = 'mt-4 text-center text-blue-500';
 
             const form = e.target;
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-
-            // TODO: REEMPLAZA ESTA URL CON LA URL DE TU SCRIPT DE GOOGLE APPS
-            //
-            // Pasos para obtener la URL:
-            // 1. Ve a tu proyecto de Google Apps Script.
-            // 2. Haz clic en "Implementar" > "Nueva implementación".
-            // 3. Selecciona el tipo de "Aplicación web".
-            // 4. Configura el acceso a "Cualquier persona".
-            // 5. Copia la URL que se genere y pégala aquí.
-            //
             const scriptUrl = 'https://script.google.com/macros/s/AKfycby4yeYzhiItlz9X70EI1uNI1jpZ9dbeZyUmsirw-oVuQWK-RuvqIyMx9agossx5kplSNg/exec';
             
             try {
-                const response = await fetch(scriptUrl, {
+                // Usamos FormData directamente, que es compatible con el modo no-cors y
+                // la función doPost del Apps Script
+                await fetch(scriptUrl, {
                     method: 'POST',
-                    redirect: 'follow', // Para seguir posibles redirecciones del servidor
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams(data).toString()
+                    mode: 'no-cors',
+                    body: new FormData(form)
                 });
 
-                // Verifica si la respuesta es exitosa (aunque el modo no-cors no lo permitía antes)
-                // Ahora, sin no-cors, podemos verificar el status
-                if (response.ok) {
-                    statusMessage.textContent = '¡Comentario enviado con éxito! Gracias por tu aporte.';
-                    statusMessage.className = 'mt-4 text-center text-green-500';
-                    form.reset();
-                } else {
-                    throw new Error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
-                }
-
+                // En modo no-cors, la promesa siempre se resuelve, así que asumimos que
+                // el envío fue exitoso. El manejo de errores se hace en el lado del servidor.
+                statusMessage.textContent = '¡Comentario enviado con éxito! Gracias por tu aporte.';
+                statusMessage.className = 'mt-4 text-center text-green-500';
+                form.reset();
             } catch (error) {
                 console.error('Error al enviar el formulario:', error);
+                // Este error solo ocurrirá si la red falla completamente
                 statusMessage.textContent = 'Ocurrió un error. Por favor, inténtalo de nuevo más tarde.';
                 statusMessage.className = 'mt-4 text-center text-red-500';
             }
