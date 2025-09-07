@@ -100,21 +100,28 @@
             // 4. Configura el acceso a "Cualquier persona".
             // 5. Copia la URL que se genere y pégala aquí.
             //
-            const scriptUrl = 'https://script.google.com/macros/s/AKfycby4yeYzhiItlz9X70EI1uNI1jpZ9dbeZyUmsirw-oVuQWK-RuvqIyMx9agossx5kplSNg/exec'; 
-          
+            const scriptUrl = 'https://script.google.com/macros/s/AKfycby4yeYzhiItlz9X70EI1uNI1jpZ9dbeZyUmsirw-oVuQWK-RuvqIyMx9agossx5kplSNg/exec';
+            
             try {
                 const response = await fetch(scriptUrl, {
                     method: 'POST',
-                    mode: 'no-cors',
+                    redirect: 'follow', // Para seguir posibles redirecciones del servidor
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
                     body: new URLSearchParams(data).toString()
                 });
 
-                statusMessage.textContent = '¡Comentario enviado con éxito! Gracias por tu aporte.';
-                statusMessage.className = 'mt-4 text-center text-green-500';
-                form.reset();
+                // Verifica si la respuesta es exitosa (aunque el modo no-cors no lo permitía antes)
+                // Ahora, sin no-cors, podemos verificar el status
+                if (response.ok) {
+                    statusMessage.textContent = '¡Comentario enviado con éxito! Gracias por tu aporte.';
+                    statusMessage.className = 'mt-4 text-center text-green-500';
+                    form.reset();
+                } else {
+                    throw new Error(`Error en la respuesta del servidor: ${response.status} ${response.statusText}`);
+                }
+
             } catch (error) {
                 console.error('Error al enviar el formulario:', error);
                 statusMessage.textContent = 'Ocurrió un error. Por favor, inténtalo de nuevo más tarde.';
