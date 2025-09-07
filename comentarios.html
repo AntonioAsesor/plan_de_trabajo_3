@@ -66,19 +66,19 @@
         import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, addDoc, collection, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuración de Firebase, provista automáticamente por el entorno
-        const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        // IMPORTANTE: PEGA TU CLAVE DE API DE FIREBASE AQUÍ.
+        // Reemplaza "PEGA_TU_API_KEY_AQUÍ" por la clave que copiaste de la consola de Firebase.
+        const FIREBASE_API_KEY_MANUAL = "PEGA_TU_API_KEY_AQUÍ";
+
+        // Configuración de Firebase
         const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        // Crea una nueva configuración de Firebase solo con los valores válidos
+        
         const firebaseConfig = {
+            apiKey: FIREBASE_API_KEY_MANUAL,
             projectId: appIdFromEnv
         };
-        if (firebaseConfigFromEnv.apiKey && !firebaseConfigFromEnv.apiKey.includes('AIzaSyD-CqsvW413PrRuSb7nTXwDKp9Aqu7S_6o')) {
-            firebaseConfig.apiKey = firebaseConfigFromEnv.apiKey;
-        }
-
+        
         // Inicializa Firebase
         let app;
         try {
@@ -86,8 +86,9 @@
         } catch (e) {
             console.error("Error al inicializar Firebase. Revisa tu configuración.", e);
             const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = 'Error: No se pudo conectar a la base de datos.';
+            messageBox.textContent = 'Error: No se pudo conectar a la base de datos. ¿Pegaste tu clave de API?';
             messageBox.className = 'text-center text-red-500 bg-red-100 p-3 rounded-md block';
+            throw e; // Lanza el error para que sea visible
         }
         
         const db = getFirestore(app);
