@@ -67,9 +67,15 @@
         import { getFirestore, addDoc, collection, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Configuración de Firebase, provista automáticamente por el entorno
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const firebaseConfigFromEnv = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const appIdFromEnv = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Añade el projectId a la configuración antes de inicializar la app
+        const firebaseConfig = {
+            ...firebaseConfigFromEnv,
+            projectId: appIdFromEnv
+        };
 
         // Inicializa Firebase
         let app;
@@ -130,7 +136,7 @@
             try {
                 // Guarda el comentario en la base de datos de Firestore
                 // El path de la colección es privado y se basa en el ID de usuario
-                const commentsCollectionRef = collection(db, `artifacts/${appId}/users/${userId}/comments`);
+                const commentsCollectionRef = collection(db, `artifacts/${appIdFromEnv}/users/${userId}/comments`);
                 await addDoc(commentsCollectionRef, data);
                 
                 messageBox.textContent = '¡Comentario enviado con éxito! Gracias por tu feedback.';
