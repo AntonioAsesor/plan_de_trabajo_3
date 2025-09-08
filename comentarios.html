@@ -29,7 +29,7 @@
     </div>
 
     <!-- Sección de mensajes de estado -->
-    <div id="statusMessage" class="hidden p-4 mb-4 text-sm rounded-lg" role="alert">
+    <div id="statusMessage" class="hidden p-4 mb-4 text-sm rounded-lg bg-red-100 text-red-800" role="alert">
         <span class="font-medium"></span>
     </div>
 
@@ -47,8 +47,8 @@
             <label for="tema" class="block text-sm font-medium text-gray-700">Tema</label>
             <select id="tema" name="tema" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
                 <option value="">Selecciona un tema</option>
-                <option value="Logistica">Logística</option>
-                <option value="AjusteFecha">Ajustar fecha</option>
+                <option value="Soporte Técnico">Soporte Técnico</option>
+                <option value="Sugerencia de producto">Sugerencia de producto</option>
                 <option value="Reportar un problema">Reportar un problema</option>
                 <option value="Otros">Otros</option>
             </select>
@@ -96,13 +96,13 @@
 
     function showStatusMessage(message, type = 'error') {
         statusMessageElement.textContent = message;
-        statusMessageElement.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+        statusMessageElement.classList.remove('hidden', 'bg-green-100', 'text-green-800');
         if (type === 'error') {
+            statusMessageElement.classList.remove('hidden');
             statusMessageElement.classList.add('bg-red-100', 'text-red-800');
         } else {
-            statusMessageElement.classList.add('bg-green-100', 'text-green-800');
+             statusMessageElement.classList.add('hidden');
         }
-        statusMessageElement.classList.remove('hidden');
     }
 
     async function initializeFirebase() {
@@ -121,7 +121,6 @@
             
             userId = auth.currentUser.uid;
             console.log("Usuario autenticado con ID:", userId);
-            showStatusMessage('Conectado a la base de datos de forma exitosa.', 'success');
 
         } catch (error) {
             console.error("Error al inicializar Firebase:", error);
@@ -129,8 +128,41 @@
         }
     }
 
-    // He eliminado la lógica de envío del formulario para centrarme en el problema de conexión
-    // Puedes volver a agregarla una vez que la conexión sea exitosa
+    commentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitButton.disabled = true;
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const tema = document.getElementById('tema').value;
+        const comentario = document.getElementById('comentario').value;
+
+        if (!db) {
+            showStatusMessage('Error: No se ha podido conectar a la base de datos.');
+            submitButton.disabled = false;
+            return;
+        }
+
+        try {
+            // Se asume que appId es un valor estático, ya que la plataforma no lo inyecta
+            const appId = "default-app-id";
+            await addDoc(collection(db, `artifacts/${appId}/public/data/miscomentarios`), {
+                nombre,
+                email,
+                tema,
+                comentario,
+                timestamp: serverTimestamp(),
+                userId: userId // Guardar el ID de usuario para referencia
+            });
+            console.log("¡Comentario enviado con éxito!");
+            commentForm.reset(); // Limpiar el formulario
+            showStatusMessage('', 'success');
+        } catch (error) {
+            console.error("Error al enviar el comentario:", error);
+            showStatusMessage(`Hubo un error al enviar tu comentario. Por favor, revisa la consola. Error: ${error.message}`);
+        } finally {
+            submitButton.disabled = false;
+        }
+    });
 
     window.onload = async () => {
         await initializeFirebase();
