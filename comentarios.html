@@ -159,7 +159,7 @@
         }
 
         try {
-                await addDoc(collection(db, "artifacts", appId, "public", "data", "miscomentarios"), {
+                await addDoc(collection(db, "miscomentarios"), {
                 nombre: nombre,
                 email: email,
                 tema: tema,
