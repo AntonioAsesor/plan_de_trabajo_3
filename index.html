@@ -9,6 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS para mapas-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Leaflet JS para mapas-->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -60,6 +65,14 @@
                 <p class="text-center text-gray-600 max-w-3xl mx-auto">El propósito es encontrar opciones que aporten al desarrollo económico y social mediante la identificación de recursos locales, capacidades individuales y colectivas, así como necesidades de formación pertinentes y asociadas a estos fines.</p>
         </section>
 
+          <!-- Mapa del Proyecto de consultoría -->
+        <section id="zona-estudio" class="my-8">
+          <div class="container mx-auto px-4 py-6">
+            <h2 class="text-2xl font-bold text-[#005f73] mb-4">Zona del estudio de consultoría</h2>
+            <div id="map" class="rounded-lg shadow-md" style="height: 400px;"></div>
+          </div>
+        </section>
+        
         <!-- Tarjetas datos Resumen del Proyecto -->
         <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16 text-center">
             <div class="card p-6">
@@ -552,8 +565,51 @@
             );
         });
     </script>
+        <!-- ================== MAPA LEAFLET ================== -->
+    <section id="zona-estudio" class="my-8">
+        <div class="container mx-auto px-4 py-6">
+            <h2 class="text-2xl font-bold text-[#005f73] mb-4">Zona del estudio de consultoría</h2>
+            <div id="map" class="rounded-lg shadow-md" style="height: 400px;"></div>
+        </div>
+    </section>
+
+    <script>
+        // Coordenadas de La Concordia, Jiquilisco, Usulután
+        const center = [13.2803, -88.5831];
+
+        // Inicializar mapa
+        const map = L.map('map').setView(center, 14);
+
+        // Capa base gratuita de OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Marcador central
+        L.marker(center)
+            .addTo(map)
+            .bindPopup("<b>La Concordia</b><br>Zona de estudio")
+            .openPopup();
+
+        // Polígono de la zona de estudio
+        const zonaEstudio = [
+            [13.2825, -88.5860],
+            [13.2820, -88.5800],
+            [13.2785, -88.5805],
+            [13.2780, -88.5855]
+        ];
+
+        L.polygon(zonaEstudio, {
+            color: "#005f73",
+            fillColor: "#94d2bd",
+            fillOpacity: 0.4
+        }).addTo(map)
+          .bindPopup("Área aproximada de estudio");
+    </script>
+    <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
