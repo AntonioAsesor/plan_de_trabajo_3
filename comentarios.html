@@ -16,63 +16,64 @@
             align-items: center;
             justify-content: center;
         }
+        .container {
+            width: 100%;
+            max-width: 28rem;
+        }
         .modal-content {
             background-color: white;
             padding: 2.5rem;
             border-radius: 1rem;
             box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 28rem;
         }
     </style>
 </head>
 <body class="p-4">
-    <div class="modal-content">
-        <h1 class="text-3xl font-bold text-center mb-2" style="color:#0a192f;">Comentarios</h1>
-        <p class="text-gray-600 text-center mb-6">Para nosotros es importante tu opinión.</p>
-        
-        <div id="status-message" class="hidden p-4 mb-4 rounded-lg text-sm text-center font-medium transition-all duration-300"></div>
-
-        <form id="comment-form" class="flex flex-col space-y-4">
-            <input type="text" id="name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nombre:" required />
-            <input type="email" id="email-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Email:" required />
+    <div class="container mx-auto">
+        <div class="modal-content mb-8">
+            <h1 class="text-3xl font-bold text-center mb-2" style="color:#0a192f;">Comentarios</h1>
+            <p class="text-gray-600 text-center mb-6">Para nosotros es importante tu opinión.</p>
             
-            <select id="topic-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="" disabled selected>Tema:</option>
-                <option value="General">General</option>
-                <option value="AjusteFechas">Ajuste de fechas</option>
-                <option value="Consultas">Consultas</option>
-                <option value="Otro">Otros</option>
-            </select>
+            <div id="status-message" class="hidden p-4 mb-4 rounded-lg text-sm text-center font-medium transition-all duration-300"></div>
+    
+            <form id="comment-form" class="flex flex-col space-y-4">
+                <input type="text" id="name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nombre:" required />
+                <input type="email" id="email-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Email:" required />
+                
+                <select id="topic-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="" disabled selected>Tema:</option>
+                    <option value="General">General</option>
+                    <option value="AjusteFechas">Ajuste de fechas</option>
+                    <option value="Consultas">Consultas</option>
+                    <option value="Otro">Otros</option>
+                </select>
+    
+                <textarea id="comment-textarea" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Comentario (máximo 600 caracteres)" rows="4" maxlength="600" required></textarea>
+                
+                <button type="submit" class="bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
+                    Enviar Comentario
+                </button>
+            </form>
+        </div>
 
-            <textarea id="comment-textarea" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Comentario (máximo 600 caracteres)" rows="4" maxlength="600" required></textarea>
-            
-            <button type="submit" class="bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
-                Enviar Comentario
-            </button>
-        </form>
+        <div class="w-full">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Comentarios Recientes</h2>
+            <div id="comments-list" class="space-y-4">
+                <!-- Los comentarios se renderizarán aquí -->
+            </div>
+        </div>
     </div>
 
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        // Establece el nivel de registro para depuración
-        setLogLevel('debug');
-
-        // Configuración de Firebase (PEGA TU CLAVE AQUÍ)
-        const firebaseConfig = {
-            apiKey: "AIzaSyD-CqsvW413PrRuSb7nTXwDKp9Aqu7S_6o",
-            authDomain: "miscomentarios-35ae6.firebaseapp.com",
-            projectId: "iscomentarios-35ae6",
-            storageBucket: "miscomentarios-35ae6.firebasestorage.app",
-            messagingSenderId: "476914028264",
-            appId: "1:476914028264:web:ce3a75b0dbfe65ce19c35d"
-        };
+        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        let db;
+        // Carga las variables globales de la plataforma
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         
         // Elementos del DOM
         const statusMessage = document.getElementById('status-message');
@@ -81,6 +82,10 @@
         const emailInput = document.getElementById('email-input');
         const topicSelect = document.getElementById('topic-select');
         const commentTextarea = document.getElementById('comment-textarea');
+        const commentsList = document.getElementById('comments-list');
+
+        let db;
+        let isAuthReady = false;
 
         // Función para mostrar mensajes de estado
         function showStatusMessage(message, type = 'success') {
@@ -103,18 +108,60 @@
                 const auth = getAuth(app);
                 db = getFirestore(app);
                 
-                await signInAnonymously(auth);
-                console.log("Firebase inicializado y usuario anónimo autenticado.");
+                if (initialAuthToken) {
+                    await signInWithCustomToken(auth, initialAuthToken);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                isAuthReady = true;
+                console.log("Firebase inicializado y usuario autenticado.");
+                setupCommentsListener();
             } catch (error) {
                 console.error("Error al inicializar Firebase:", error);
                 showStatusMessage("Error al conectar con la base de datos. Revisa la consola.", 'error');
             }
         }
 
+        // Configura el listener para los comentarios en tiempo real
+        const setupCommentsListener = () => {
+            if (!isAuthReady) return;
+
+            try {
+                // Usa la ruta correcta para la colección pública de la aplicación
+                const commentsCollectionRef = collection(db, `/artifacts/${appId}/public/data/miscomentarios`);
+                const q = query(commentsCollectionRef, orderBy("timestamp", "desc"));
+                
+                onSnapshot(q, (snapshot) => {
+                    commentsList.innerHTML = '';
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const commentDiv = document.createElement('div');
+                        commentDiv.className = 'p-4 bg-white rounded-lg shadow-sm border border-gray-200';
+                        commentDiv.innerHTML = `
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-semibold text-gray-900">${data.name}</h3>
+                                <p class="text-xs text-gray-500">${data.topic}</p>
+                            </div>
+                            <p class="mt-1 text-gray-600">${data.comment}</p>
+                        `;
+                        commentsList.appendChild(commentDiv);
+                    });
+                });
+            } catch (error) {
+                console.error("Error al cargar comentarios:", error);
+                showStatusMessage(`Error al cargar comentarios: ${error.message}`, 'error');
+            }
+        };
+
         // Manejo del envío del formulario
         commentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            if (!isAuthReady) {
+                showStatusMessage('La base de datos no está inicializada. Por favor, espera.', 'error');
+                return;
+            }
+
             const name = nameInput.value.trim();
             const email = emailInput.value.trim();
             const topic = topicSelect.value;
@@ -129,21 +176,15 @@
                 showStatusMessage("El comentario no puede superar los 600 caracteres.", 'error');
                 return;
             }
-
-            if (!db) {
-                showStatusMessage("La base de datos no está inicializada.", 'error');
-                return;
-            }
-
+            
             try {
-                // Guarda el comentario en la colección 'miscomentarios'
-                const commentsCollectionRef = collection(db, 'miscomentarios');
+                const commentsCollectionRef = collection(db, `/artifacts/${appId}/public/data/miscomentarios`);
                 await addDoc(commentsCollectionRef, {
                     name,
                     email,
                     topic,
                     comment,
-                    timestamp: serverTimestamp() // Guarda el timestamp del servidor
+                    timestamp: new Date()
                 });
                 
                 commentForm.reset();
