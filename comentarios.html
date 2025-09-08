@@ -57,11 +57,23 @@
             <label for="comentario" class="block text-sm font-medium text-gray-700">Comentario (máximo 500 caracteres)</label>
             <textarea id="comentario" name="comentario" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" maxlength="500" required></textarea>
         </div>
-        <div>
-            <button type="submit" id="submitButton" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Enviar Comentario
-            </button>
-        </div>
+<div class="btn-group space-x-2">
+    <!-- Botón para enviar comentario -->
+    <button 
+        type="submit" 
+        id="submitButton" 
+        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        Enviar Comentario
+    </button>
+    <!-- Botón para regresar a la infografía -->
+    <button 
+        type="button"
+        class="btn btn-primary px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium shadow-sm"
+        onclick="window.location.href='index.html'">
+        Regresar a la Infografía Principal
+    </button>
+</div>
+
     </form>
 </div>
 
