@@ -13,7 +13,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <!-- Leaflet JS para mapas-->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
+    <!-- Agregamos los estilos de Awesome Markers -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.awesome-markers/2.0.5/leaflet.awesome-markers.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -68,7 +70,7 @@
           <!-- Mapa del Proyecto de consultoría -->
         <section id="zona-estudio" class="my-8">
           <div class="container mx-auto px-4 py-6">
-            <h2 class="text-2xl font-bold text-[#005f73] mb-4">Zona del estudio de consultoría</h2>
+            <h2 class="text-2xl font-bold text-[#005f73] mb-4">Zona de estudio de laconsultoría</h2>
             <div id="map" class="rounded-lg shadow-md" style="height: 400px;"></div>
           </div>
         </section>
@@ -580,7 +582,7 @@
         // Inicializar mapa
         const map = L.map('map').setView(center, 14);
 
-        // Capa base gratuita de OpenStreetMap
+        // Capa base gratuita de OpenStreetMap: // Cargar la capa de mapa base
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
         }).addTo(map);
@@ -605,10 +607,40 @@
             fillOpacity: 0.4
         }).addTo(map)
           .bindPopup("Área aproximada de estudio");
-    </script>
+
+  // Definir íconos personalizados
+  const iconEscuela = L.AwesomeMarkers.icon({
+    icon: 'school',
+    markerColor: 'blue',
+    prefix: 'fa'
+  });
+  const iconIglesia = L.AwesomeMarkers.icon({
+    icon: 'church',
+    markerColor: 'orange',
+    prefix: 'fa'
+  });
+  const iconEmpresa = L.AwesomeMarkers.icon({
+    icon: 'building',
+    markerColor: 'green',
+    prefix: 'fa'
+  });
+
+ // <-- AQUI VAN LOS MARCADORES MANUALES
+ // Marcador simple
+    L.marker([13.2801, -88.5820])
+      .addTo(map)
+      .bindPopup("<b>Escuela La Concordia</b><br>Punto de reunión");
+    
+    // Otro marcador
+    L.marker([13.2815, -88.5835])
+      .addTo(map)
+      .bindPopup("<b>Iglesia Central</b><br>Zona de referencia");
+    
+        </script>
     <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
