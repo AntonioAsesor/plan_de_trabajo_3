@@ -78,31 +78,42 @@
         import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, getDocs, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Configuración de Firebase, provista automáticamente por el entorno
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        // Estas variables son provistas de forma segura por el entorno de ejecución.
+        // NO necesitas pegarlas aquí. Este es el método seguro y correcto.
+        const firebaseConfigRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // Inicializa Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        
+        let app;
+        let auth;
+        let db;
         setLogLevel('debug');
+        let allComments = [];
 
-        // Autenticación de usuario
-        async function authenticateUser() {
+        async function initializeFirebase() {
+            const statusMessage = document.getElementById('statusMessage');
             try {
+                if (!firebaseConfigRaw) {
+                    statusMessage.textContent = 'Error: No se encontró la configuración de Firebase.';
+                    console.error('Error: La configuración de Firebase no está disponible en el entorno.');
+                    return;
+                }
+                const firebaseConfig = JSON.parse(firebaseConfigRaw);
+                
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
                 if (initialAuthToken) {
                     await signInWithCustomToken(auth, initialAuthToken);
                 } else {
                     await signInAnonymously(auth);
                 }
-                return auth.currentUser;
+
+                loadComments();
             } catch (error) {
-                console.error("Error de autenticación:", error);
-                document.getElementById('statusMessage').textContent = 'Error de autenticación. No se puede cargar la información.';
-                return null;
+                console.error("Error de inicialización o autenticación:", error);
+                statusMessage.textContent = 'Error de autenticación. No se puede cargar la información.';
             }
         }
 
@@ -110,25 +121,19 @@
             const statusMessage = document.getElementById('statusMessage');
             statusMessage.textContent = 'Cargando comentarios...';
             
-            const user = await authenticateUser();
-            if (!user) {
-                return;
-            }
-
             const commentsBody = document.getElementById('commentsBody');
             commentsBody.innerHTML = '';
-            let allComments = [];
-
+            allComments = [];
+            
             try {
-                // La ubicación de la colección es privada, lo que asegura que solo tú (con tu token de autenticación) puedas acceder
-                const commentsCollectionRef = collection(db, `artifacts/${appId}/users/${user.uid}/comments`);
+                const commentsCollectionRef = collection(db, "miscomentarios");
                 const querySnapshot = await getDocs(commentsCollectionRef);
                 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    const timestamp = data.timestamp.toDate().toLocaleString(); // Convierte la marca de tiempo a un formato legible
+                    const timestamp = data.timestamp.toDate().toLocaleString();
                     allComments.push({
-                        nombre: data.persona,
+                        nombre: data.nombre,
                         email: data.email,
                         tema: data.tema,
                         comentario: data.comentario,
@@ -136,7 +141,6 @@
                     });
                 });
                 
-                // Ordena los comentarios por fecha, del más reciente al más antiguo
                 allComments.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
 
                 if (allComments.length === 0) {
@@ -159,26 +163,25 @@
                 console.error('Error al cargar los comentarios:', error);
                 statusMessage.textContent = 'Ocurrió un error al cargar los comentarios. Por favor, revisa la consola.';
             }
-
-            // Descargar CSV
-            document.getElementById('downloadBtn').addEventListener('click', () => {
-                const header = ["Nombre", "Email", "Tema", "Comentario", "Fecha y Hora"];
-                const data = allComments.map(c => [c.nombre, c.email, c.tema, c.comentario, c.fecha]);
-                const csvContent = "data:text/csv;charset=utf-8," + [
-                    header.join(","),
-                    ...data.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(","))
-                ].join("\n");
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", "comentarios.csv");
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
         }
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const header = ["Nombre", "Email", "Tema", "Comentario", "Fecha y Hora"];
+            const data = allComments.map(c => [c.nombre, c.email, c.tema, c.comentario, c.fecha]);
+            const csvContent = "data:text/csv;charset=utf-8," + [
+                header.join(","),
+                ...data.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(","))
+            ].join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "comentarios.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
         
-        loadComments();
+        window.onload = initializeFirebase;
     </script>
 </body>
 </html>
