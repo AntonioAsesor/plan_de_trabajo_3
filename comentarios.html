@@ -68,14 +68,23 @@
 <!-- Firebase SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
     import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // Habilitar el logging de Firebase para la depuración
     setLogLevel('Debug');
 
-    // Configuración de Firebase - REEMPLAZAR CON TUS PROPIOS DATOS
+    const statusMessageElement = document.getElementById('statusMessage');
+    const commentForm = document.getElementById('commentForm');
+    const submitButton = document.getElementById('submitButton');
+
+    let app;
+    let auth;
+    let db;
+    let userId = null;
+    let isAuthReady = false;
+
+    // Configuración de Firebase (PEGA TUS CLAVES AQUÍ)
     const firebaseConfig = {
         apiKey: "AIzaSyD-CqsvW413PrRuSb7nTXwDKp9Aqu7S_6o",
         authDomain: "miscomentarios-35ae6.firebaseapp.com",
@@ -85,30 +94,24 @@
         appId: "1:476914028264:web:ce3a75b0dbfe65ce19c35d"
     };
 
-    const statusMessageElement = document.getElementById('statusMessage');
-    const commentForm = document.getElementById('commentForm');
-    const submitButton = document.getElementById('submitButton');
-
-    let app;
-    let auth;
-    let db;
-    let userId;
+    // Variables globales proporcionadas por el entorno de Canvas
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
     function showStatusMessage(message, type = 'error') {
         statusMessageElement.textContent = message;
-        statusMessageElement.classList.remove('hidden', 'bg-green-100', 'text-green-800');
+        statusMessageElement.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
         if (type === 'error') {
-            statusMessageElement.classList.remove('hidden');
             statusMessageElement.classList.add('bg-red-100', 'text-red-800');
-        } else {
-             statusMessageElement.classList.add('hidden');
+        } else if (type === 'success') {
+            statusMessageElement.classList.add('bg-green-100', 'text-green-800');
         }
     }
 
     async function initializeFirebase() {
         try {
-            if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.projectId || firebaseConfig.projectId === "TU_PROJECT_ID") {
-                showStatusMessage('Error de configuración: firebaseConfig no está correctamente configurado. Por favor, reemplaza los valores de marcador de posición.');
+            if (Object.keys(firebaseConfig).length === 0) {
+                showStatusMessage('Error de configuración: firebaseConfig está vacío o no es válido. Revisa el backend.');
                 return;
             }
 
@@ -116,11 +119,23 @@
             auth = getAuth(app);
             db = getFirestore(app);
 
-            // Iniciar sesión de forma anónima si no se proporciona un token de la plataforma
-            await signInAnonymously(auth);
-            
-            userId = auth.currentUser.uid;
-            console.log("Usuario autenticado con ID:", userId);
+            // Escuchar cambios en el estado de autenticación
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    isAuthReady = true;
+                    console.log("Usuario autenticado con ID:", userId);
+                    // Una vez que el usuario está listo, habilitar el formulario
+                    commentForm.addEventListener('submit', handleFormSubmission);
+                } else {
+                    // Si el usuario no está autenticado, intentar iniciar sesión
+                    if (initialAuthToken) {
+                        await signInWithCustomToken(auth, initialAuthToken);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                }
+            });
 
         } catch (error) {
             console.error("Error al inicializar Firebase:", error);
@@ -128,45 +143,42 @@
         }
     }
 
-    commentForm.addEventListener('submit', async (e) => {
+    async function handleFormSubmission(e) {
         e.preventDefault();
         submitButton.disabled = true;
+        
         const nombre = document.getElementById('nombre').value;
         const email = document.getElementById('email').value;
         const tema = document.getElementById('tema').value;
         const comentario = document.getElementById('comentario').value;
 
-        if (!db) {
-            showStatusMessage('Error: No se ha podido conectar a la base de datos.');
+        if (!isAuthReady || !db) {
+            showStatusMessage('Error: No se ha podido autenticar. Vuelve a cargar la página.');
             submitButton.disabled = false;
             return;
         }
 
         try {
-            // Se asume que appId es un valor estático, ya que la plataforma no lo inyecta
-            const appId = "default-app-id";
             await addDoc(collection(db, `artifacts/${appId}/public/data/miscomentarios`), {
                 nombre,
                 email,
                 tema,
                 comentario,
                 timestamp: serverTimestamp(),
-                userId: userId // Guardar el ID de usuario para referencia
+                userId: userId
             });
             console.log("¡Comentario enviado con éxito!");
-            commentForm.reset(); // Limpiar el formulario
-            showStatusMessage('', 'success');
+            commentForm.reset();
+            showStatusMessage('¡Comentario enviado con éxito!', 'success');
         } catch (error) {
             console.error("Error al enviar el comentario:", error);
             showStatusMessage(`Hubo un error al enviar tu comentario. Por favor, revisa la consola. Error: ${error.message}`);
         } finally {
             submitButton.disabled = false;
         }
-    });
+    }
 
-    window.onload = async () => {
-        await initializeFirebase();
-    };
+    window.onload = initializeFirebase;
 </script>
 
 </body>
