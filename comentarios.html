@@ -47,8 +47,8 @@
             <label for="tema" class="block text-sm font-medium text-gray-700">Tema</label>
             <select id="tema" name="tema" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
                 <option value="">Selecciona un tema</option>
-                <option value="Soporte Técnico">Soporte Técnico</option>
-                <option value="Sugerencia de producto">Sugerencia de producto</option>
+                <option value="Logistica">Logística</option>
+                <option value="AjusteFecha">Ajustar fecha</option>
                 <option value="Reportar un problema">Reportar un problema</option>
                 <option value="Otros">Otros</option>
             </select>
@@ -75,10 +75,15 @@
     // Habilitar el logging de Firebase para la depuración
     setLogLevel('Debug');
 
-    // Variables globales inyectadas por la plataforma
-    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    // Configuración de Firebase - REEMPLAZAR CON TUS PROPIOS DATOS
+    const firebaseConfig = {
+        apiKey: "AIzaSyD-CqsvW413PrRuSb7nTXwDKp9Aqu7S_6o",
+        authDomain: "miscomentarios-35ae6.firebaseapp.com",
+        projectId: "miscomentarios-35ae6",
+        storageBucket: "miscomentarios-35ae6.firebasestorage.app",
+        messagingSenderId: "476914028264",
+        appId: "1:476914028264:web:ce3a75b0dbfe65ce19c35d"
+    };
 
     const statusMessageElement = document.getElementById('statusMessage');
     const commentForm = document.getElementById('commentForm');
@@ -102,8 +107,8 @@
 
     async function initializeFirebase() {
         try {
-            if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.projectId) {
-                showStatusMessage('Error de configuración: firebaseConfig está vacío o no es válido. Revisa el backend.');
+            if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.projectId || firebaseConfig.projectId === "TU_PROJECT_ID") {
+                showStatusMessage('Error de configuración: firebaseConfig no está correctamente configurado. Por favor, reemplaza los valores de marcador de posición.');
                 return;
             }
 
@@ -111,13 +116,9 @@
             auth = getAuth(app);
             db = getFirestore(app);
 
-            // Intentar iniciar sesión con el token de la plataforma
-            if (initialAuthToken) {
-                await signInWithCustomToken(auth, initialAuthToken);
-            } else {
-                // Si no hay token, iniciar sesión de forma anónima
-                await signInAnonymously(auth);
-            }
+            // Iniciar sesión de forma anónima si no se proporciona un token de la plataforma
+            await signInAnonymously(auth);
+            
             userId = auth.currentUser.uid;
             console.log("Usuario autenticado con ID:", userId);
             showStatusMessage('Conectado a la base de datos de forma exitosa.', 'success');
@@ -128,38 +129,8 @@
         }
     }
 
-    commentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        submitButton.disabled = true;
-        const nombre = document.getElementById('nombre').value;
-        const email = document.getElementById('email').value;
-        const tema = document.getElementById('tema').value;
-        const comentario = document.getElementById('comentario').value;
-
-        if (!db) {
-            showStatusMessage('Error: No se ha podido conectar a la base de datos.');
-            submitButton.disabled = false;
-            return;
-        }
-
-        try {
-            await addDoc(collection(db, `/artifacts/${appId}/public/data/miscomentarios`), {
-                nombre,
-                email,
-                tema,
-                comentario,
-                timestamp: serverTimestamp(),
-                userId: userId // Guardar el ID de usuario para referencia
-            });
-            showStatusMessage('¡Comentario enviado con éxito!', 'success');
-            commentForm.reset(); // Limpiar el formulario
-        } catch (error) {
-            console.error("Error al enviar el comentario:", error);
-            showStatusMessage(`Hubo un error al enviar tu comentario. Por favor, revisa la consola. Error: ${error.message}`);
-        } finally {
-            submitButton.disabled = false;
-        }
-    });
+    // He eliminado la lógica de envío del formulario para centrarme en el problema de conexión
+    // Puedes volver a agregarla una vez que la conexión sea exitosa
 
     window.onload = async () => {
         await initializeFirebase();
