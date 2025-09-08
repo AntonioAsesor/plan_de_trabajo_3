@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplicación de Comentarios Completa</title>
+    <title>Comentarios</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,77 +12,77 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 28rem;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-lg p-6 max-w-lg w-full">
-        <h1 class="text-3xl font-bold text-gray-800 text-center mb-6">Comentarios</h1>
+<body class="p-4">
+    <div class="modal-content">
+        <h1 class="text-3xl font-bold text-center mb-2" style="color:#0a192f;">Comentarios</h1>
+        <p class="text-gray-600 text-center mb-6">Para nosotros es importante tu opinión.</p>
         
-        <!-- Contenedor para mostrar mensajes de estado -->
         <div id="status-message" class="hidden p-4 mb-4 rounded-lg text-sm text-center font-medium transition-all duration-300"></div>
 
-        <!-- Área para mostrar el ID del usuario -->
-        <div class="mb-6 text-center text-gray-500 text-sm">
-            Tu ID de usuario: <span id="user-id" class="font-mono bg-gray-200 rounded px-2 py-1 select-all">Cargando...</span>
-        </div>
-
-        <!-- Formulario para agregar comentarios -->
         <form id="comment-form" class="flex flex-col space-y-4">
-            <input type="email" id="email-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Correo electrónico" required />
-            <input type="text" id="name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nombre" required />
+            <input type="text" id="name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nombre:" required />
+            <input type="email" id="email-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Email:" required />
             
             <select id="topic-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="" disabled selected>Selecciona un tema</option>
+                <option value="" disabled selected>Tema:</option>
                 <option value="General">General</option>
-                <option value="Fechas de eventos">Soporte</option>
-                <option value="Logística">Logística</option>
-                <option value="Otros temas">Otos temas</option>
+                <option value="AjusteFechas">Ajuste de fechas</option>
+                <option value="Consultas">Consultas</option>
+                <option value="Otro">Otros</option>
             </select>
 
-            <textarea id="comment-textarea" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Escribe tu comentario..." rows="4" required></textarea>
+            <textarea id="comment-textarea" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Comentario (máximo 600 caracteres)" rows="4" maxlength="600" required></textarea>
             
             <button type="submit" class="bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
-                Agregar Comentario
+                Enviar Comentario
             </button>
         </form>
-
-        <hr class="my-6 border-gray-200">
-
-        <!-- Contenedor para la lista de comentarios -->
-        <div id="comments-container" class="space-y-4">
-            <p class="text-center text-gray-500 italic">Cargando comentarios...</p>
-        </div>
     </div>
 
-    <!-- Script de Firebase (importaciones) -->
+    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Establece el nivel de registro de Firebase para depuración
+        // Establece el nivel de registro para depuración
         setLogLevel('debug');
 
-        // Variables globales para la configuración de Firebase
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-        let db, auth;
-        let userId;
-
+        // Configuración de Firebase (PEGA TU CLAVE AQUÍ)
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-CqsvW413PrRuSb7nTXwDKp9Aqu7S_6o",
+            authDomain: "miscomentarios-35ae6.firebaseapp.com",
+            projectId: "iscomentarios-35ae6",
+            storageBucket: "miscomentarios-35ae6.firebasestorage.app",
+            messagingSenderId: "476914028264",
+            appId: "1:476914028264:web:ce3a75b0dbfe65ce19c35d"
+        };
+        
+        let db;
+        
         // Elementos del DOM
         const statusMessage = document.getElementById('status-message');
-        const userIdSpan = document.getElementById('user-id');
         const commentForm = document.getElementById('comment-form');
-        const emailInput = document.getElementById('email-input');
         const nameInput = document.getElementById('name-input');
+        const emailInput = document.getElementById('email-input');
         const topicSelect = document.getElementById('topic-select');
         const commentTextarea = document.getElementById('comment-textarea');
-        const commentsContainer = document.getElementById('comments-container');
 
-        // Función para mostrar mensajes de estado en la UI
+        // Función para mostrar mensajes de estado
         function showStatusMessage(message, type = 'success') {
             statusMessage.textContent = message;
             statusMessage.classList.remove('hidden', 'bg-red-200', 'text-red-800', 'bg-green-200', 'text-green-800');
@@ -96,97 +96,37 @@
             }, 3000);
         }
 
-        // Función de inicialización de la aplicación
+        // Inicialización de Firebase
         async function initFirebase() {
             try {
-                // Inicializa Firebase con la configuración proporcionada
                 const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
+                const auth = getAuth(app);
                 db = getFirestore(app);
-
-                // Autenticación del usuario
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-
-                // Asigna el ID del usuario después de la autenticación
-                userId = auth.currentUser?.uid || crypto.randomUUID();
-                userIdSpan.textContent = userId;
-
-                console.log("Firebase inicializado y usuario autenticado.");
-                setupCommentListener();
                 
+                await signInAnonymously(auth);
+                console.log("Firebase inicializado y usuario anónimo autenticado.");
             } catch (error) {
                 console.error("Error al inicializar Firebase:", error);
-                showStatusMessage("Error al conectar con la base de datos.", 'error');
+                showStatusMessage("Error al conectar con la base de datos. Revisa la consola.", 'error');
             }
         }
 
-        // Configura el oyente en tiempo real para la colección de comentarios
-        function setupCommentListener() {
-            // Ruta de la colección de comentarios: privada para el usuario actual
-            const commentsPath = `/artifacts/${appId}/users/${userId}/comments`;
-            const commentsCollectionRef = collection(db, commentsPath);
-
-            // Escucha los cambios en tiempo real en la colección
-            onSnapshot(commentsCollectionRef, (snapshot) => {
-                const comments = [];
-                snapshot.forEach(doc => {
-                    const commentData = doc.data();
-                    comments.push({ id: doc.id, ...commentData });
-                });
-                
-                // Ordena los comentarios por fecha de creación de forma descendente
-                comments.sort((a, b) => {
-                    const dateA = a.createdAt ? a.createdAt.toMillis() : 0;
-                    const dateB = b.createdAt ? b.createdAt.toMillis() : 0;
-                    return dateB - dateA;
-                });
-
-                renderComments(comments);
-            }, (error) => {
-                console.error("Error al escuchar los comentarios:", error);
-                showStatusMessage("Error al cargar los comentarios.", 'error');
-            });
-        }
-
-        // Dibuja los comentarios en la UI
-        function renderComments(comments) {
-            commentsContainer.innerHTML = '';
-            if (comments.length === 0) {
-                commentsContainer.innerHTML = '<p class="text-center text-gray-500 italic">Todavía no hay comentarios. ¡Sé el primero!</p>';
-                return;
-            }
-
-            comments.forEach(comment => {
-                const commentElement = document.createElement('div');
-                commentElement.className = 'bg-gray-50 p-4 rounded-lg shadow-sm';
-                
-                const commentDate = comment.createdAt ? new Date(comment.createdAt.toMillis()).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : 'Fecha desconocida';
-
-                commentElement.innerHTML = `
-                    <p class="text-sm text-gray-500"><strong>Nombre:</strong> ${comment.name}</p>
-                    <p class="text-sm text-gray-500"><strong>Correo:</strong> ${comment.email}</p>
-                    <p class="text-sm text-gray-500"><strong>Tema:</strong> ${comment.topic}</p>
-                    <p class="text-gray-800 leading-relaxed break-words mt-2">${comment.comment}</p>
-                    <p class="text-right text-xs text-gray-400 mt-2">${commentDate}</p>
-                `;
-                commentsContainer.appendChild(commentElement);
-            });
-        }
-
-        // Maneja el envío del formulario de comentarios
+        // Manejo del envío del formulario
         commentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = emailInput.value.trim();
+            
             const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
             const topic = topicSelect.value;
             const comment = commentTextarea.value.trim();
 
-            if (!email || !name || !topic || !comment) {
+            if (!name || !email || !topic || !comment) {
                 showStatusMessage("Por favor, rellena todos los campos.", 'error');
+                return;
+            }
+
+            if (comment.length > 600) {
+                showStatusMessage("El comentario no puede superar los 600 caracteres.", 'error');
                 return;
             }
 
@@ -196,24 +136,22 @@
             }
 
             try {
-                // Prepara la ruta de la colección
-                const commentsCollectionRef = collection(db, `/artifacts/${appId}/users/${userId}/comments`);
-
-                // Agrega el nuevo documento a la colección con todos los campos
+                // Guarda el comentario en la colección 'miscomentarios'
+                const commentsCollectionRef = collection(db, 'miscomentarios');
                 await addDoc(commentsCollectionRef, {
-                    email: email,
-                    name: name,
-                    topic: topic,
-                    comment: comment,
-                    createdAt: serverTimestamp() // Usamos un timestamp del servidor
+                    name,
+                    email,
+                    topic,
+                    comment,
+                    timestamp: serverTimestamp() // Guarda el timestamp del servidor
                 });
                 
                 commentForm.reset();
-                showStatusMessage("¡Comentario agregado exitosamente!");
+                showStatusMessage("¡Comentario enviado exitosamente!");
 
             } catch (error) {
-                console.error("Error al agregar el comentario:", error);
-                showStatusMessage("Error al agregar el comentario.", 'error');
+                console.error("Error al guardar el comentario:", error);
+                showStatusMessage("Error al enviar el comentario. Revisa la consola.", 'error');
             }
         });
 
