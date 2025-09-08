@@ -72,7 +72,7 @@
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
     import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // Habilitar logging de Firebase para debugging
+    // Habilitar el logging de Firebase para la depuración
     setLogLevel('Debug');
 
     // Variables globales inyectadas por la plataforma
@@ -124,7 +124,7 @@
 
         } catch (error) {
             console.error("Error al inicializar Firebase:", error);
-            showStatusMessage(`Error al conectar con la base de datos. Revisa la consola para más detalles. Error: ${error.message}`);
+            showStatusMessage(`Error al conectar con la base de datos. Por favor, revisa la consola. Error: ${error.message}`);
         }
     }
 
