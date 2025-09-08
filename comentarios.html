@@ -3,201 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comentarios</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Formulario de Comentarios</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             background-color: #f3f4f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
         .container {
-            width: 100%;
-            max-width: 28rem;
-        }
-        .modal-content {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 2rem;
             background-color: white;
-            padding: 2.5rem;
-            border-radius: 1rem;
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
     </style>
 </head>
-<body class="p-4">
-    <div class="container mx-auto">
-        <div class="modal-content mb-8">
-            <h1 class="text-3xl font-bold text-center mb-2" style="color:#0a192f;">Comentarios</h1>
-            <p class="text-gray-600 text-center mb-6">Para nosotros es importante tu opinión.</p>
-            
-            <div id="status-message" class="hidden p-4 mb-4 rounded-lg text-sm text-center font-medium transition-all duration-300"></div>
-    
-            <form id="comment-form" class="flex flex-col space-y-4">
-                <input type="text" id="name-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Nombre:" required />
-                <input type="email" id="email-input" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Email:" required />
-                
-                <select id="topic-select" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <option value="" disabled selected>Tema:</option>
-                    <option value="General">General</option>
-                    <option value="AjusteFechas">Ajuste de fechas</option>
-                    <option value="Consultas">Consultas</option>
-                    <option value="Otro">Otros</option>
-                </select>
-    
-                <textarea id="comment-textarea" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Comentario (máximo 600 caracteres)" rows="4" maxlength="600" required></textarea>
-                
-                <button type="submit" class="bg-blue-600 text-white font-semibold py-3 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300 ease-in-out">
-                    Enviar Comentario
-                </button>
-            </form>
-        </div>
+<body>
 
-        <div class="w-full">
-            <h2 class="text-2xl font-bold text-gray-800 mb-4">Comentarios Recientes</h2>
-            <div id="comments-list" class="space-y-4">
-                <!-- Los comentarios se renderizarán aquí -->
-            </div>
-        </div>
+<div id="app" class="container">
+    <div class="text-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Comentarios</h1>
+        <p class="text-gray-500 mt-1">Para nosotros es importante tu opinión.</p>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        // Carga las variables globales de la plataforma
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
-        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        
-        // Elementos del DOM
-        const statusMessage = document.getElementById('status-message');
-        const commentForm = document.getElementById('comment-form');
-        const nameInput = document.getElementById('name-input');
-        const emailInput = document.getElementById('email-input');
-        const topicSelect = document.getElementById('topic-select');
-        const commentTextarea = document.getElementById('comment-textarea');
-        const commentsList = document.getElementById('comments-list');
+    <!-- Sección de mensajes de estado -->
+    <div id="statusMessage" class="hidden p-4 mb-4 text-sm rounded-lg" role="alert">
+        <span class="font-medium"></span>
+    </div>
 
-        let db;
-        let isAuthReady = false;
+    <!-- Formulario de comentarios -->
+    <form id="commentForm" class="space-y-4">
+        <div>
+            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+            <input type="text" id="nombre" name="nombre" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+        </div>
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+            <input type="email" id="email" name="email" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+        </div>
+        <div>
+            <label for="tema" class="block text-sm font-medium text-gray-700">Tema</label>
+            <select id="tema" name="tema" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <option value="">Selecciona un tema</option>
+                <option value="Soporte Técnico">Soporte Técnico</option>
+                <option value="Sugerencia de producto">Sugerencia de producto</option>
+                <option value="Reportar un problema">Reportar un problema</option>
+                <option value="Otros">Otros</option>
+            </select>
+        </div>
+        <div>
+            <label for="comentario" class="block text-sm font-medium text-gray-700">Comentario (máximo 500 caracteres)</label>
+            <textarea id="comentario" name="comentario" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" maxlength="500" required></textarea>
+        </div>
+        <div>
+            <button type="submit" id="submitButton" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Enviar Comentario
+            </button>
+        </div>
+    </form>
 
-        // Función para mostrar mensajes de estado
-        function showStatusMessage(message, type = 'success') {
-            statusMessage.textContent = message;
-            statusMessage.classList.remove('hidden', 'bg-red-200', 'text-red-800', 'bg-green-200', 'text-green-800');
-            if (type === 'error') {
-                statusMessage.classList.add('bg-red-200', 'text-red-800');
+    <div class="mt-8 text-center">
+        <p class="text-sm font-medium text-gray-700">Comentarios Recientes</p>
+        <div id="commentsList" class="mt-4 space-y-4">
+            <!-- Los comentarios se cargarán aquí -->
+        </div>
+        <p id="loadingComments" class="text-gray-500 mt-4 text-sm">Cargando comentarios...</p>
+    </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Habilitar logging de Firebase para debugging
+    setLogLevel('Debug');
+
+    // Variables globales inyectadas por la plataforma
+    const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+    const statusMessageElement = document.getElementById('statusMessage');
+    const commentForm = document.getElementById('commentForm');
+    const commentsListElement = document.getElementById('commentsList');
+    const loadingCommentsElement = document.getElementById('loadingComments');
+    const submitButton = document.getElementById('submitButton');
+
+    let app;
+    let auth;
+    let db;
+    let userId;
+
+    function showStatusMessage(message, type = 'error') {
+        statusMessageElement.textContent = message;
+        statusMessageElement.classList.remove('hidden', 'bg-red-100', 'text-red-800', 'bg-green-100', 'text-green-800');
+        if (type === 'error') {
+            statusMessageElement.classList.add('bg-red-100', 'text-red-800');
+        } else {
+            statusMessageElement.classList.add('bg-green-100', 'text-green-800');
+        }
+        statusMessageElement.classList.remove('hidden');
+    }
+
+    async function initializeFirebase() {
+        try {
+            if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.projectId) {
+                showStatusMessage('Error de configuración: firebaseConfig está vacío o no es válido. Revisa el backend.');
+                return;
+            }
+
+            app = initializeApp(firebaseConfig);
+            auth = getAuth(app);
+            db = getFirestore(app);
+
+            // Intentar iniciar sesión con el token de la plataforma
+            if (initialAuthToken) {
+                await signInWithCustomToken(auth, initialAuthToken);
             } else {
-                statusMessage.classList.add('bg-green-200', 'text-green-800');
+                // Si no hay token, iniciar sesión de forma anónima
+                await signInAnonymously(auth);
             }
-            setTimeout(() => {
-                statusMessage.classList.add('hidden');
-            }, 3000);
+            userId = auth.currentUser.uid;
+            console.log("Usuario autenticado con ID:", userId);
+            showStatusMessage('Conectado a la base de datos de forma exitosa.', 'success');
+
+        } catch (error) {
+            console.error("Error al inicializar Firebase:", error);
+            showStatusMessage(`Error al conectar con la base de datos. Revisa la consola para más detalles. Error: ${error.message}`);
+        }
+    }
+
+    function addCommentToDOM(comment) {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = 'p-4 bg-gray-100 rounded-lg shadow-sm';
+        const date = comment.timestamp ? new Date(comment.timestamp.seconds * 1000) : new Date();
+        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        commentDiv.innerHTML = `
+            <div class="flex justify-between items-center text-sm text-gray-600 mb-2">
+                <span class="font-bold text-gray-800">${comment.nombre}</span>
+                <span>${formattedDate}</span>
+            </div>
+            <p class="text-gray-700">${comment.comentario}</p>
+        `;
+        commentsListElement.prepend(commentDiv);
+    }
+
+    async function setupRealtimeListener() {
+        if (!db) {
+            console.error("Firestore no está inicializado. No se puede configurar el listener.");
+            return;
         }
 
-        // Inicialización de Firebase
-        async function initFirebase() {
-            try {
-                const app = initializeApp(firebaseConfig);
-                const auth = getAuth(app);
-                db = getFirestore(app);
-                
-                if (initialAuthToken) {
-                    await signInWithCustomToken(auth, initialAuthToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                isAuthReady = true;
-                console.log("Firebase inicializado y usuario autenticado.");
-                setupCommentsListener();
-            } catch (error) {
-                console.error("Error al inicializar Firebase:", error);
-                showStatusMessage("Error al conectar con la base de datos. Revisa la consola.", 'error');
-            }
-        }
+        const commentsCollectionRef = collection(db, `/artifacts/${appId}/public/data/miscomentarios`);
+        // NOTA: Para evitar errores de índices, no usamos `orderBy()`.
+        // En su lugar, se ordenarán los comentarios en el cliente.
+        const q = query(commentsCollectionRef);
 
-        // Configura el listener para los comentarios en tiempo real
-        const setupCommentsListener = () => {
-            if (!isAuthReady) return;
+        loadingCommentsElement.classList.remove('hidden');
 
-            try {
-                // Usa la ruta correcta para la colección pública de la aplicación
-                const commentsCollectionRef = collection(db, `/artifacts/${appId}/public/data/miscomentarios`);
-                const q = query(commentsCollectionRef, orderBy("timestamp", "desc"));
-                
-                onSnapshot(q, (snapshot) => {
-                    commentsList.innerHTML = '';
-                    snapshot.forEach((doc) => {
-                        const data = doc.data();
-                        const commentDiv = document.createElement('div');
-                        commentDiv.className = 'p-4 bg-white rounded-lg shadow-sm border border-gray-200';
-                        commentDiv.innerHTML = `
-                            <div class="flex items-center justify-between mb-2">
-                                <h3 class="font-semibold text-gray-900">${data.name}</h3>
-                                <p class="text-xs text-gray-500">${data.topic}</p>
-                            </div>
-                            <p class="mt-1 text-gray-600">${data.comment}</p>
-                        `;
-                        commentsList.appendChild(commentDiv);
-                    });
-                });
-            } catch (error) {
-                console.error("Error al cargar comentarios:", error);
-                showStatusMessage(`Error al cargar comentarios: ${error.message}`, 'error');
-            }
-        };
+        onSnapshot(q, (snapshot) => {
+            loadingCommentsElement.classList.add('hidden');
+            const comments = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                comments.push({ id: doc.id, ...data });
+            });
+            // Ordenar los comentarios por fecha en el cliente
+            comments.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
 
-        // Manejo del envío del formulario
-        commentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!isAuthReady) {
-                showStatusMessage('La base de datos no está inicializada. Por favor, espera.', 'error');
-                return;
-            }
-
-            const name = nameInput.value.trim();
-            const email = emailInput.value.trim();
-            const topic = topicSelect.value;
-            const comment = commentTextarea.value.trim();
-
-            if (!name || !email || !topic || !comment) {
-                showStatusMessage("Por favor, rellena todos los campos.", 'error');
-                return;
-            }
-
-            if (comment.length > 600) {
-                showStatusMessage("El comentario no puede superar los 600 caracteres.", 'error');
-                return;
-            }
-            
-            try {
-                const commentsCollectionRef = collection(db, `/artifacts/${appId}/public/data/miscomentarios`);
-                await addDoc(commentsCollectionRef, {
-                    name,
-                    email,
-                    topic,
-                    comment,
-                    timestamp: new Date()
-                });
-                
-                commentForm.reset();
-                showStatusMessage("¡Comentario enviado exitosamente!");
-
-            } catch (error) {
-                console.error("Error al guardar el comentario:", error);
-                showStatusMessage("Error al enviar el comentario. Revisa la consola.", 'error');
-            }
+            // Limpiar la lista actual de comentarios
+            commentsListElement.innerHTML = '';
+            // Agregar los comentarios ordenados
+            comments.forEach(comment => addCommentToDOM(comment));
+        }, (error) => {
+            console.error("Error al escuchar los comentarios:", error);
+            showStatusMessage(`Error al cargar los comentarios. Revisa la consola para más detalles. Error: ${error.message}`);
         });
+    }
 
-        // Inicia la aplicación al cargar la ventana
-        window.addEventListener('load', initFirebase);
-    </script>
+    commentForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        submitButton.disabled = true;
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const tema = document.getElementById('tema').value;
+        const comentario = document.getElementById('comentario').value;
+
+        if (!db) {
+            showStatusMessage('Error: No se ha podido conectar a la base de datos.');
+            submitButton.disabled = false;
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, `/artifacts/${appId}/public/data/miscomentarios`), {
+                nombre,
+                email,
+                tema,
+                comentario,
+                timestamp: serverTimestamp(),
+                userId: userId // Guardar el ID de usuario para referencia
+            });
+            showStatusMessage('¡Comentario enviado con éxito!', 'success');
+            commentForm.reset(); // Limpiar el formulario
+        } catch (error) {
+            console.error("Error al enviar el comentario:", error);
+            showStatusMessage(`Hubo un error al enviar tu comentario. Por favor, revisa la consola. Error: ${error.message}`);
+        } finally {
+            submitButton.disabled = false;
+        }
+    });
+
+    window.onload = async () => {
+        await initializeFirebase();
+        if (db) {
+            setupRealtimeListener();
+        }
+    };
+</script>
+
 </body>
 </html>
