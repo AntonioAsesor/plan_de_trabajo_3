@@ -567,72 +567,79 @@
             );
         });
     </script>
-        <!-- ================== MAPA LEAFLET ================== -->
-    <script>
-        // Coordenadas de La Concordia, Jiquilisco, Usulután
-        const center = [13.2803, -88.5831];
+<!-- ================== MAPA LEAFLET ================== -->
+<!-- ================== MAPA LEAFLET ================== -->
+<script>
+    // Coordenadas de La Concordia, Jiquilisco, Usulután
+    const center = [13.2803, -88.5831];
 
-        // Inicializar mapa
-        const map = L.map('map').setView(center, 14);
+    // Inicializar mapa
+    const map = L.map('map').setView(center, 14);
 
-        // Capa base gratuita de OpenStreetMap: // Cargar la capa de mapa base
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-        }).addTo(map);
+    // Cargar la capa base de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+    }).addTo(map);
 
-        // Marcador central
-        L.marker(center)
-            .addTo(map)
-            .bindPopup("<b>La Concordia</b><br>Zona de estudio")
-            .openPopup();
+    // Marcador central
+    L.marker(center)
+        .addTo(map)
+        .bindPopup("<b>La Concordia</b><br>Zona de estudio")
+        .openPopup();
 
-        // Polígono de la zona de estudio
-        const zonaEstudio = [
-            [13.2825, -88.5860],
-            [13.2820, -88.5800],
-            [13.2785, -88.5805],
-            [13.2780, -88.5855]
-        ];
+    // Polígono de la zona de estudio
+    const zonaEstudio = [
+        [13.2825, -88.5860],
+        [13.2820, -88.5800],
+        [13.2785, -88.5805],
+        [13.2780, -88.5855]
+    ];
 
-        L.polygon(zonaEstudio, {
-            color: "#005f73",
-            fillColor: "#94d2bd",
-            fillOpacity: 0.4
-        }).addTo(map)
-          .bindPopup("Área aproximada de estudio");
+    L.polygon(zonaEstudio, {
+        color: "#005f73",
+        fillColor: "#94d2bd",
+        fillOpacity: 0.4
+    }).addTo(map)
+      .bindPopup("Área aproximada de estudio");
 
-  // Definir íconos personalizados
-  const iconEscuela = L.AwesomeMarkers.icon({
-    icon: 'school',
-    markerColor: 'blue',
-    prefix: 'fa'
-  });
-  const iconIglesia = L.AwesomeMarkers.icon({
-    icon: 'church',
-    markerColor: 'orange',
-    prefix: 'fa'
-  });
-  const iconEmpresa = L.AwesomeMarkers.icon({
-    icon: 'building',
-    markerColor: 'green',
-    prefix: 'fa'
-  });
+    // ================== ÍCONOS PERSONALIZADOS ==================
+    const iconEscuela = L.AwesomeMarkers.icon({
+        icon: 'school',
+        markerColor: 'blue',
+        prefix: 'fa'
+    });
+    const iconIglesia = L.AwesomeMarkers.icon({
+        icon: 'church',
+        markerColor: 'orange',
+        prefix: 'fa'
+    });
+    const iconEmpresa = L.AwesomeMarkers.icon({
+        icon: 'building',
+        markerColor: 'green',
+        prefix: 'fa'
+    });
 
- // <-- AQUI VAN LOS MARCADORES MANUALES
- // Marcador simple
-    L.marker([13.2801, -88.5820])
+    // ================== MARCADORES MANUALES ==================
+    // Escuela La Concordia
+    L.marker([13.2801, -88.5820], { icon: iconEscuela })
       .addTo(map)
       .bindPopup("<b>Escuela La Concordia</b><br>Punto de reunión");
-    
-    // Otro marcador
-    L.marker([13.2815, -88.5835])
+
+    // Iglesia Central
+    L.marker([13.2815, -88.5835], { icon: iconIglesia })
       .addTo(map)
       .bindPopup("<b>Iglesia Central</b><br>Zona de referencia");
-    
-        </script>
-    <!-- ================== FIN MAPA LEAFLET ================== -->
+
+    // Empresa local de referencia
+    L.marker([13.2795, -88.5842], { icon: iconEmpresa })
+      .addTo(map)
+      .bindPopup("<b>Empresa ABC</b><br>Punto estratégico");
+</script>
+<!-- ================== FIN MAPA LEAFLET ================== -->
+<!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
