@@ -159,11 +159,11 @@
         }
 
         try {
-            await addDoc(collection(db, `artifacts/${appId}/public/data/miscomentarios`), {
-                nombre,
-                email,
-                tema,
-                comentario,
+                await addDoc(collection(db, "artifacts", appId, "public", "data", "miscomentarios"), {
+                nombre: nombre,
+                email: email,
+                tema: tema,
+                comentario: comentario,
                 timestamp: serverTimestamp(),
                 userId: userId
             });
