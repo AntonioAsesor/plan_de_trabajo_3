@@ -49,6 +49,45 @@
             transform: translateY(-5px);
             box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
         }
+        /* Esta parte es TOOLTIP*/
+.tooltip-container {
+    position: relative; /* Es necesario para posicionar el tooltip dentro de él */
+    display: inline-block; /* Para que el contenedor se ajuste al tamaño del botón */
+}
+.tooltip-text {
+    visibility: hidden; /* Oculto por defecto */
+    width: 160px; /* Ancho del tooltip */
+    background-color: #333; /* Fondo oscuro */
+    color: #fff; /* Texto blanco */
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute; /* Posicionamiento absoluto respecto al .tooltip-container */
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+    bottom: 125%; /* Posiciona el tooltip arriba del botón */
+    left: 50%;
+    margin-left: -80px; /* Centra el tooltip */
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s; /* Transición suave */
+    font-size: 0.875rem; /* Tamaño de fuente más pequeño */
+}
+/* Flecha del tooltip */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* En la parte inferior del tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent; /* Color de la flecha */
+}
+/* Mostrar el tooltip cuando el mouse está sobre el contenedor */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+        
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -77,16 +116,21 @@
             
         <!-- Botones Metodología y Resultados esperados (documentos en PDF)-->
             <div class="text-center mt-8 space-x-4">
-            <a href="https://drive.google.com/file/d/1exK7Wu9RomN4LZj0hkyI5V8718VjUFlA/view?usp=sharing" title="Haz clic para ver la Metodología en PDF." target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+            <div class="tooltip-container">    
+            <a href="https://drive.google.com/file/d/1exK7Wu9RomN4LZj0hkyI5V8718VjUFlA/view?usp=sharing" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
                     Ver Metodología
                     </a>
-            <a href="https://drive.google.com/file/d/1JK8Hxutfp-EIQVoPUvLvtJ_77C7MdR21/view?usp=sharing" title="Haz clic para ver Resultados esperados de la consultoría en PDF." class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+                 <span class="tooltip-text">Haz clic para ver la Metodología en PDF.</span>
+             </div>
+              <div class="tooltip-container">     
+            <a href="https://drive.google.com/file/d/1JK8Hxutfp-EIQVoPUvLvtJ_77C7MdR21/view?usp=sharing" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
                 Ver Resultados esperados
                 </a>
+            <span class="tooltip-text">Haz clic para ver Resultados esperados de la consultoría en PDF.</span>
                 </div>
    </section>
 
-          <!-- Mapa del Proyecto de consultoría -->
+<!-- Mapa del Proyecto de consultoría -->
         <section id="zona-estudio" class="my-8">
           <div class="container mx-auto px-4 py-6">
             <h2 class="text-2xl font-bold text-[#005f73] mb-4">Zona de estudio de la consultoría</h2>
@@ -122,17 +166,26 @@
             </div>
         <!-- Botón para el plan de trabajo que lleva al documento de Google Sheets -->
             <div class="text-center mt-8 space-x-4">
-            <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" title = "Click para ver el Plan de trabajo en versión Excel en el Drive." target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+             <div class="tooltip-container">
+            <a href="https://docs.google.com/spreadsheets/d/1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo/edit?gid=1326532457#gid=1326532457" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
                     Ver Plan de trabajo en Excel
                     </a>
-            <a href="calendario.html" title = "Click para ver el Plan de trabajo al detalle según se describe en Hito 1." class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+                 <span class="tooltip-text">Click para ver el Plan de trabajo en versión Excel en el Drive.</span>
+             </div>
+             <div class="tooltip-container">  
+            <a href="calendario.html" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
                 Ver Plan de trabajo (Hito 1)
-                </a>
-              <a href="comentarios.html" title = "Si tienes consultas o comentarios, puedes dejarlo en el módulo de comentarios haciendo click."
+                   </a>
+                 <span class="tooltip-text">Click para ver el Plan de trabajo al detalle según se describe en Hito 1.</span>
+            </div>
+              <div class="tooltip-container">   
+              <a href="comentarios.html"
                class="text-indigo-600 font-semibold hover:text-indigo-800 transition-colors duration-300">
                 ¿Consultas o Comentarios?
                </a>
-                </div>
+              <span class="tooltip-text">Si tienes consultas o comentarios, puedes dejarlo en el módulo de comentarios haciendo click.</span>
+             </div>
+             </div>
 
         </section>
  <!-- Gráfico Días de trabajo por tipo de actividad -->
@@ -153,18 +206,30 @@
             </div>
         <!-- Botón para el plan de trabajo que lleva al documento de Google Sheets -->
             <div class="text-center mt-8 space-x-4">
-  <a href="https://drive.google.com/file/d/1grL8HMMIR2APiVJ4hYeEe12VnfnzJ91i/view?usp=sharing" title = "Click para ver el instrumento Guía de Grupos Focales en PDF." target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+              <div class="tooltip-container">   
+            <a href="https://drive.google.com/file/d/1grL8HMMIR2APiVJ4hYeEe12VnfnzJ91i/view?usp=sharing" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
              Guía Grupo focal
              </a>
-   <a href="https://drive.google.com/file/d/1L4pqfBObwqjenbwsbOZ1kiehfXIlQSfR/view?usp=sharing" title = "Click para ver el instrumento Guía entrevista a Empresas en PDF." target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+             <span class="tooltip-text">Click para ver el instrumento Guía de Grupos Focales en PDF.</span>
+               </div>
+              <div class="tooltip-container">    
+             <a href="https://drive.google.com/file/d/1L4pqfBObwqjenbwsbOZ1kiehfXIlQSfR/view?usp=sharing" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
              Guía entrevista a Empresas
              </a>
-   <a href="https://drive.google.com/file/d/1GXrCrhy-pgoIfUkQSqPc1AOYFUV380nf/view?usp=sharing" title = "Click para ver el instrumento Guía entrevista a Actores clave en PDF." target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+             <span class="tooltip-text">Click para ver el instrumento Guía de entrevista a Empresas en PDF.</span>
+                </div>
+              <div class="tooltip-container">
+             <a href="https://drive.google.com/file/d/1GXrCrhy-pgoIfUkQSqPc1AOYFUV380nf/view?usp=sharing" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
               Guía entrevista Actores clave
              </a>
-  <a href="https://drive.google.com/file/d/1JWSa7TOGaDk8sUXXZx-e_t6y4GA_eDSl/view?usp=sharing" title = "Click para ver el instrumento Guía Mapeo Participativo (PRA) en PDF." target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
+             <span class="tooltip-text">Click para ver el instrumento Guía entrevista a Actores clave en PDF.</span>
+             </div>
+             <div class="tooltip-container">
+             <a href="https://drive.google.com/file/d/1JWSa7TOGaDk8sUXXZx-e_t6y4GA_eDSl/view?usp=sharing" target="_blank" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg transition-transform duration-200 transform hover:scale-105">
               Guía Mapeo Participativo (PRA)
              </a>
+             <span class="tooltip-text">Click para ver el instrumento Guía Mapeo Participativo (PRA) en PDF.</span>
+                </div>
             </div>
         </section>
 <!-- Tarjetas de Hitos y Entregables Clave -->
@@ -666,6 +731,7 @@
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
