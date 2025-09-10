@@ -93,6 +93,47 @@
         .hidden {
             display: none;
         }
+/* Formatos de TOOLTIP */
+        .tooltip-container {
+    position: relative; /* Es necesario para posicionar el tooltip dentro de él */
+    display: inline-block; /* Para que el contenedor se ajuste al tamaño del botón */
+}
+
+.tooltip-text {
+    visibility: hidden; /* Oculto por defecto */
+    width: 160px; /* Ancho del tooltip */
+    background-color: #333; /* Fondo oscuro */
+    color: #fff; /* Texto blanco */
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 0;
+    position: absolute; /* Posicionamiento absoluto respecto al .tooltip-container */
+    z-index: 10; /* Asegura que esté por encima de otros elementos */
+    bottom: 125%; /* Posiciona el tooltip arriba del botón */
+    left: 50%;
+    margin-left: -80px; /* Centra el tooltip */
+    opacity: 0;
+    transition: opacity 0.3s, visibility 0.3s; /* Transición suave */
+    font-size: 0.875rem; /* Tamaño de fuente más pequeño */
+}
+
+/* Flecha del tooltip */
+.tooltip-text::after {
+    content: "";
+    position: absolute;
+    top: 100%; /* En la parte inferior del tooltip */
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent; /* Color de la flecha */
+}
+
+/* Mostrar el tooltip cuando el mouse está sobre el contenedor */
+.tooltip-container:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
     </style>
 </head>
 <body>
@@ -141,12 +182,19 @@
     </div>
 
     <div class="btn-group">
-        <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver a Infografía Principal</button>
-        <a href="https://drive.google.com/file/d/1exK7Wu9RomN4LZj0hkyI5V8718VjUFlA/view?usp=sharing" target="_blank" class="btn btn-primary">Ver fases metodológicas</a>
+      <div class="tooltip-container">  
+      <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver a Infografía Principal</button>
+      <span class="tooltip-text">Regresar a página principal</span>
+     </div>
+    <div class="tooltip-container">   
+    <a href="https://drive.google.com/file/d/1exK7Wu9RomN4LZj0hkyI5V8718VjUFlA/view?usp=sharing" target="_blank" class="btn btn-primary">Ver fases metodológicas</a>
+    <span class="tooltip-text">Ver la Metodología completa en PDF.</span>
     </div>
+   </div>
+    
     <div>
       <p class="text-gray-700 pt-3" style="text-align:left">
-        *: LG: Luís González, CC: Claudia Cruz, DM: Danilo Martínez, MA: Marcos Andrade, OA: Oscar Artiga, SP: Sussa Panameño, KS: Karla Segovia, OS: Oscar Sánchez.
+        * Responsables: LG - Luís González, CC - Claudia Cruz, DM - Danilo Martínez, MA - Marcos Andrade, OA - Oscar Artiga, SP - Sussa Panameño, KS - Karla Segovia, OS - Oscar Sánchez.
       </p>
     </div>
 
