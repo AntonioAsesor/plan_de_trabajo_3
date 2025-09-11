@@ -1,346 +1,173 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calendario de la Consultoría</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding: 2rem;
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            width: 100%;
-            max-width: 1200px;
-            box-sizing: border-box;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-        .header-title {
-            color: #1a73e8;
-            font-weight: 700;
-            font-size: 1.5rem;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr)); /* columnas fijas */
-            gap: 6px; /* menos espacio entre días */
-        }
-        .day-name {
-            text-align: center;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            background-color: #e5e7eb;
-            color: #4b5563;
-        }
-        .day {
-            background-color: #f9fafb;
-            color: #1f2937;
-            position: relative;
-            height: 140px; /* altura fija */
-            display: flex;
-            flex-direction: column;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            padding: 0.5rem;
-            box-sizing: border-box;
-            overflow: hidden; /* evita desbordes */
-        }
-        .day:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .day-number {
-            font-size: 0.875rem;
-            color: #6b7280;
-            text-align: right;
-            width: 100%;
-            padding-right: 0.25rem;
-        }
-        .events-container {
-            flex-grow: 1;
-            overflow-y: auto; /* scroll interno si hay muchos eventos */
-            margin-top: 0.5rem;
-        }
-        .event {
-            width: 100%;
-            margin: 2px 0;
-            border-radius: 0.25rem;
-            padding: 2px 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: white;
-            font-weight: 500;
-        }
-        .event-Fase { background-color: #4a90e2; }
-        .event-Hito { background-color: #2dff8c; }
-        .event-Comunidad { background-color: #2ecc71; }
-        .event-FUSAL { background-color: #0000ff; }
-        .event-ASR { background-color: #f79646; }
-        .event-Reunión { background-color: #c0504d; }
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-        .btn-primary {
-            background-color: #1a73e8;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #1765cc;
-        }
-        .loading-text, .error-text {
-            text-align: center;
-            font-size: 1.25rem;
-            margin-top: 2rem;
-        }
-        .hidden {
-            display: none;
-        }
-        .month-year {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        .calendar-footer {
-            margin-top: 1.5rem;
-            text-align: center;
-            font-size: 0.875rem;
-            color: #6b7280;
-        }
-
-        /* Responsive: en móvil muestra 2 columnas */
-        @media (max-width: 768px) {
-            .calendar-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan de Trabajo: Diagnóstico en Villas Concordia</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .event {
+      background-color: #3b82f6;
+      color: white;
+      padding: 2px 4px;
+      border-radius: 4px;
+      margin-top: 2px;
+      font-size: 0.75rem;
+      cursor: pointer; /* Nuevo: mostrar mano al pasar */
+    }
+    .event:hover {
+      opacity: 0.9;
+    }
+  </style>
 </head>
-<body>
+<body class="bg-gray-50 p-6">
 
-<div class="container">
-    <div class="header-title">Calendario de la Consultoría</div>
-    <p class="text-gray-700 my-3" style="text-align:left">
-        Visualización de los hitos y actividades clave de la consultoría en un formato de calendario.
-    </p>
+  <h1 class="text-2xl font-bold text-blue-700 mb-4">📅 Plan de Trabajo: Diagnóstico en Villas Concordia</h1>
+  <div id="calendar" class="grid grid-cols-7 gap-2"></div>
 
-    <div class="loading-text" id="loading">Cargando datos del calendario...</div>
-    <div class="error-text hidden" id="error">
-        Error: No se encontraron eventos válidos. Revisa el formato de fechas y las columnas en tu hoja de cálculo.
+  <!-- ==================== NUEVO MODAL PARA DETALLE DE ACTIVIDAD ==================== -->
+  <div id="event-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+      <h2 id="modal-title" class="text-xl font-bold text-blue-600 mb-4">Detalle del Evento</h2>
+      <div id="modal-content" class="space-y-2 text-sm text-gray-700"></div>
+      <div class="mt-4 text-right">
+        <button id="close-modal" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Cerrar</button>
+      </div>
     </div>
+  </div>
+  <!-- ============================================================================== -->
 
-    <div id="calendar-container" class="hidden">
-        <div class="header">
-            <button id="prev-month" class="btn btn-primary">&lt;</button>
-            <div class="month-year" id="month-year-display"></div>
-            <button id="next-month" class="btn btn-primary">&gt;</button>
-        </div>
-        <div class="calendar-grid" id="calendar-grid">
-            <div class="day-name">Lun</div>
-            <div class="day-name">Mar</div>
-            <div class="day-name">Mié</div>
-            <div class="day-name">Jue</div>
-            <div class="day-name">Vie</div>
-            <div class="day-name">Sáb</div>
-            <div class="day-name">Dom</div>
-        </div>
-    </div>
-    
-    <div class="btn-group flex justify-center items-center space-x-4">
-        <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver a Infografía Principal</button>
-    </div>
+  <script>
+    const sheetId = "TU_SHEET_ID"; // 👉 Reemplaza con el ID de tu hoja
+    const sheetName = "Gantt"; // 👉 Nombre de la hoja
+    const apiKey = "TU_API_KEY"; // 👉 Tu API Key de Google Sheets
 
-    <div class="calendar-footer">
-        *Los colores indican la categoría de la actividad.
-    </div>
-</div>
-
-<script>
-    const SPREADSHEET_ID = '1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo';
-    const SHEET_NAME = 'Calendario';
-    const RANGE = 'A:H';
-
-    const loadingEl = document.getElementById('loading');
-    const errorEl = document.getElementById('error');
-    const calendarContainerEl = document.getElementById('calendar-container');
-    const calendarGrid = document.getElementById('calendar-grid');
-    const monthYearDisplay = document.getElementById('month-year-display');
-    const prevMonthBtn = document.getElementById('prev-month');
-    const nextMonthBtn = document.getElementById('next-month');
-
-    let currentMonth = new Date().getMonth();
-    let currentYear = new Date().getFullYear();
-    let allEvents = [];
-
-    function parseDate(dateValue) {
-        if (!dateValue) return null;
-        
-        const dateMatch = String(dateValue).match(/Date\((\d+),(\d+),(\d+)\)/);
-        if (dateMatch) {
-            const year = parseInt(dateMatch[1]);
-            const month = parseInt(dateMatch[2]);
-            const day = parseInt(dateMatch[3]);
-            return new Date(year, month, day);
-        }
-
-        const parsedDate = new Date(dateValue);
-        if (!isNaN(parsedDate.getTime())) {
-            return parsedDate;
-        }
-
-        return null;
+    // ==================== FUNCIÓN: Parsear fechas ====================
+    function parseDate(value) {
+      if (!value) return null;
+      const date = new Date(value);
+      return isNaN(date) ? null : date;
     }
 
+    // ==================== FUNCIÓN: Obtener datos de la hoja ====================
     async function fetchSheetData() {
-        try {
-            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
-            const response = await fetch(url);
-            
-            if (!response.ok) {
-                console.error('Error de red al cargar la hoja de cálculo:', response.statusText);
-                throw new Error('Error en la red.');
-            }
-            
-            const text = await response.text();
-            console.log('Respuesta cruda de Google Sheets:', text);
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+      const res = await fetch(url);
+      const json = await res.json();
 
-            const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-            const data = JSON.parse(jsonText);
-            
-            console.log('Datos analizados:', data.table.rows);
+      // Saltamos la fila 0 (encabezados) y mapeamos datos
+      const events = json.values.slice(1).map(row => {
+        const description = row[0];        // Col A
+        const category = row[2];           // Col C
+        const responsable = row[3];        // Col D (nuevo)
+        const progreso = row[4];           // Col E (nuevo)
+        const startDate = parseDate(row[5]); // Col F
+        const endDate = parseDate(row[6]);   // Col G
+        const dias = row[7];               // Col H (nuevo)
 
-            const events = data.table.rows.slice(1).map(row => {
-                const parts = row.c.map(cell => (cell && cell.v !== undefined) ? (cell.f || cell.v) : null);
-                
-                const description = parts[0];
-                const category = parts[2];
-                const startDate = parseDate(parts[5]);
-                const endDate = parseDate(parts[6]);
-                
-                return {
-                    description: description,
-                    category: category,
-                    startDate: startDate,
-                    endDate: endDate
-                };
-            }).filter(event => event.startDate && event.endDate);
+        return {
+          description,
+          category,
+          responsable,
+          progreso,
+          startDate,
+          endDate,
+          dias
+        };
+      }).filter(event => event.startDate && event.endDate);
 
-            console.log('Eventos filtrados y listos:', events);
-            return events;
-        } catch (error) {
-            console.error('Fetch error:', error);
-            errorEl.classList.remove('hidden');
-            return [];
-        }
+      return events;
     }
 
-    function renderCalendar(month, year) {
-        const daysContainer = calendarGrid.querySelectorAll('.day');
-        daysContainer.forEach(day => day.remove());
+    // ==================== FUNCIÓN: Renderizar calendario ====================
+    function renderCalendar(events) {
+      const calendarEl = document.getElementById("calendar");
+      calendarEl.innerHTML = "";
 
-        const firstDayOfMonth = new Date(year, month, 1).getDay();
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        
-        let firstDayAdjusted = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
-        
-        monthYearDisplay.textContent = new Date(year, month).toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+      // Encabezados de los días
+      const days = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+      days.forEach(day => {
+        const dayEl = document.createElement("div");
+        dayEl.classList.add("font-bold", "text-center", "p-2", "bg-gray-200");
+        dayEl.textContent = day;
+        calendarEl.appendChild(dayEl);
+      });
 
-        for (let i = 0; i < firstDayAdjusted; i++) {
-            const emptyDay = document.createElement('div');
-            emptyDay.classList.add('day');
-            calendarGrid.appendChild(emptyDay);
-        }
+      // Determinar mes actual
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const firstDay = new Date(year, month, 1).getDay();
+      const lastDate = new Date(year, month + 1, 0).getDate();
 
-        for (let i = 1; i <= daysInMonth; i++) {
-            const dayEl = document.createElement('div');
-            dayEl.classList.add('day');
-            
-            const dayNumberEl = document.createElement('span');
-            dayNumberEl.classList.add('day-number');
-            dayNumberEl.textContent = i;
-            dayEl.appendChild(dayNumberEl);
+      // Celdas vacías al inicio
+      for (let i = 0; i < firstDay; i++) {
+        const emptyCell = document.createElement("div");
+        calendarEl.appendChild(emptyCell);
+      }
 
-            const eventsContainer = document.createElement('div');
-            eventsContainer.classList.add('events-container');
-            dayEl.appendChild(eventsContainer);
+      // Días del mes
+      for (let date = 1; date <= lastDate; date++) {
+        const dayCell = document.createElement("div");
+        dayCell.classList.add("border", "h-24", "p-1", "relative");
 
-            const currentDate = new Date(year, month, i);
-            currentDate.setHours(0, 0, 0, 0);
-            
-            allEvents.forEach(event => {
-                const startDate = new Date(event.startDate);
-                startDate.setHours(0, 0, 0, 0);
-                const endDate = new Date(event.endDate);
-                endDate.setHours(0, 0, 0, 0);
+        const dateEl = document.createElement("div");
+        dateEl.classList.add("text-xs", "text-gray-500");
+        dateEl.textContent = date;
+        dayCell.appendChild(dateEl);
 
-                if (currentDate >= startDate && currentDate <= endDate) {
-                    const eventEl = document.createElement('div');
-                    eventEl.classList.add('event', `event-${event.category.replace(/\s/g, '')}`);
-                    eventEl.textContent = event.description;
-                    eventsContainer.appendChild(eventEl);
-                }
-            });
+        const eventsContainer = document.createElement("div");
+        eventsContainer.classList.add("space-y-1");
 
-            calendarGrid.appendChild(dayEl);
-        }
+        // Insertar eventos que coinciden con este día
+        const currentDate = new Date(year, month, date);
+        events.forEach(event => {
+          if (currentDate >= event.startDate && currentDate <= event.endDate) {
+            const eventEl = document.createElement("div");
+            eventEl.classList.add("event", `event-${event.category?.replace(/\s/g, '') || 'General'}`);
+            eventEl.textContent = event.description;
+
+            // 👉 Nuevo: al hacer click, mostramos modal con detalle
+            eventEl.addEventListener("click", () => showEventModal(event));
+
+            eventsContainer.appendChild(eventEl);
+          }
+        });
+
+        dayCell.appendChild(eventsContainer);
+        calendarEl.appendChild(dayCell);
+      }
     }
 
-    prevMonthBtn.addEventListener('click', () => {
-        currentMonth--;
-        if (currentMonth < 0) {
-            currentMonth = 11;
-            currentYear--;
-        }
-        renderCalendar(currentMonth, currentYear);
+    // ==================== FUNCIÓN: Mostrar modal con detalle ====================
+    function showEventModal(event) {
+      const modal = document.getElementById("event-modal");
+      const modalTitle = document.getElementById("modal-title");
+      const modalContent = document.getElementById("modal-content");
+
+      modalTitle.textContent = event.description;
+
+      modalContent.innerHTML = `
+        <p><strong>Responsable:</strong> ${event.responsable || "—"}</p>
+        <p><strong>Progreso:</strong> ${event.progreso || "—"}</p>
+        <p><strong>Inicio:</strong> ${event.startDate.toLocaleDateString()}</p>
+        <p><strong>Fin:</strong> ${event.endDate.toLocaleDateString()}</p>
+        <p><strong>Días:</strong> ${event.dias || "—"}</p>
+      `;
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    // ==================== EVENTO: Cerrar modal ====================
+    document.getElementById("close-modal").addEventListener("click", () => {
+      const modal = document.getElementById("event-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
     });
 
-    nextMonthBtn.addEventListener('click', () => {
-        currentMonth++;
-        if (currentMonth > 11) {
-            currentMonth = 0;
-            currentYear++;
-        }
-        renderCalendar(currentMonth, currentYear);
-    });
-
-    async function init() {
-        loadingEl.classList.remove('hidden');
-        allEvents = await fetchSheetData();
-        loadingEl.classList.add('hidden');
-
-        if (allEvents.length > 0) {
-            calendarContainerEl.classList.remove('hidden');
-            renderCalendar(currentMonth, currentYear);
-        } else {
-            errorEl.classList.remove('hidden');
-        }
-    }
-
-    window.onload = init;
-</script>
-
+    // ==================== INICIALIZACIÓN ====================
+    fetchSheetData().then(events => renderCalendar(events));
+  </script>
 </body>
 </html>
