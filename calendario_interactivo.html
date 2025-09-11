@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -15,6 +15,7 @@
             align-items: flex-start;
             min-height: 100vh;
             padding: 2rem;
+            box-sizing: border-box;
         }
         .container {
             background-color: white;
@@ -23,6 +24,7 @@
             padding: 2rem;
             width: 100%;
             max-width: 1200px;
+            box-sizing: border-box;
         }
         .header {
             display: flex;
@@ -37,16 +39,14 @@
         }
         .calendar-grid {
             display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-        }
-        .day-name, .day {
-            text-align: center;
-            padding: 1rem 0;
-            border-radius: 0.5rem;
-            font-weight: 600;
+            grid-template-columns: repeat(7, minmax(0, 1fr)); /* columnas fijas */
+            gap: 6px; /* menos espacio entre días */
         }
         .day-name {
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
             background-color: #e5e7eb;
             color: #4b5563;
         }
@@ -54,29 +54,36 @@
             background-color: #f9fafb;
             color: #1f2937;
             position: relative;
-            min-height: 100px;
+            height: 140px; /* altura fija */
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
             border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
             cursor: pointer;
             transition: transform 0.2s, box-shadow 0.2s;
+            padding: 0.5rem;
+            box-sizing: border-box;
+            overflow: hidden; /* evita desbordes */
         }
         .day:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .day-number {
-            position: absolute;
-            top: 5px;
-            right: 5px;
             font-size: 0.875rem;
             color: #6b7280;
+            text-align: right;
+            width: 100%;
+            padding-right: 0.25rem;
+        }
+        .events-container {
+            flex-grow: 1;
+            overflow-y: auto; /* scroll interno si hay muchos eventos */
+            margin-top: 0.5rem;
         }
         .event {
-            width: 90%;
-            margin: 2px auto;
+            width: 100%;
+            margin: 2px 0;
             border-radius: 0.25rem;
             padding: 2px 4px;
             font-size: 0.75rem;
@@ -86,7 +93,6 @@
             color: white;
             font-weight: 500;
         }
-        /* Nuevos colores para los eventos */
         .event-Fase { background-color: #4a90e2; }
         .event-Hito { background-color: #2dff8c; }
         .event-Comunidad { background-color: #2ecc71; }
@@ -123,6 +129,13 @@
             text-align: center;
             font-size: 0.875rem;
             color: #6b7280;
+        }
+
+        /* Responsive: en móvil muestra 2 columnas */
+        @media (max-width: 768px) {
+            .calendar-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
@@ -182,21 +195,17 @@
     let currentYear = new Date().getFullYear();
     let allEvents = [];
 
-    // Función para analizar la fecha de diferentes formatos
     function parseDate(dateValue) {
         if (!dateValue) return null;
         
-        // Intenta el formato "Date(año,mes,día)" de Google Sheets
         const dateMatch = String(dateValue).match(/Date\((\d+),(\d+),(\d+)\)/);
         if (dateMatch) {
             const year = parseInt(dateMatch[1]);
-            // El mes en JavaScript es 0-11, Google Sheets es 0-11
             const month = parseInt(dateMatch[2]);
             const day = parseInt(dateMatch[3]);
             return new Date(year, month, day);
         }
 
-        // Intenta el formato de fecha normal (ej. "2025-01-20")
         const parsedDate = new Date(dateValue);
         if (!isNaN(parsedDate.getTime())) {
             return parsedDate;
@@ -205,7 +214,6 @@
         return null;
     }
 
-    // Función para obtener los datos de Google Sheets
     async function fetchSheetData() {
         try {
             const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
@@ -238,7 +246,7 @@
                     startDate: startDate,
                     endDate: endDate
                 };
-            }).filter(event => event.startDate && event.endDate); // Filtramos los eventos sin fechas válidas
+            }).filter(event => event.startDate && event.endDate);
 
             console.log('Eventos filtrados y listos:', events);
             return events;
@@ -249,7 +257,6 @@
         }
     }
 
-    // Función para renderizar el calendario para un mes y año dados
     function renderCalendar(month, year) {
         const daysContainer = calendarGrid.querySelectorAll('.day');
         daysContainer.forEach(day => day.remove());
@@ -276,6 +283,10 @@
             dayNumberEl.textContent = i;
             dayEl.appendChild(dayNumberEl);
 
+            const eventsContainer = document.createElement('div');
+            eventsContainer.classList.add('events-container');
+            dayEl.appendChild(eventsContainer);
+
             const currentDate = new Date(year, month, i);
             currentDate.setHours(0, 0, 0, 0);
             
@@ -289,7 +300,7 @@
                     const eventEl = document.createElement('div');
                     eventEl.classList.add('event', `event-${event.category.replace(/\s/g, '')}`);
                     eventEl.textContent = event.description;
-                    dayEl.appendChild(eventEl);
+                    eventsContainer.appendChild(eventEl);
                 }
             });
 
@@ -297,7 +308,6 @@
         }
     }
 
-    // Navegación por el calendario
     prevMonthBtn.addEventListener('click', () => {
         currentMonth--;
         if (currentMonth < 0) {
@@ -316,7 +326,6 @@
         renderCalendar(currentMonth, currentYear);
     });
 
-    // Inicializar el calendario
     async function init() {
         loadingEl.classList.remove('hidden');
         allEvents = await fetchSheetData();
