@@ -26,10 +26,11 @@
       max-width: 1200px;
       box-sizing: border-box;
     }
+    /* 🔹 Grid estable para 7 columnas exactas */
     .calendar-grid {
       display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 10px;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
     }
     .day-name {
       text-align: center;
@@ -38,6 +39,9 @@
       font-weight: 600;
       background-color: #e5e7eb;
       color: #4b5563;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
     .day {
       background-color: #f9fafb;
@@ -49,19 +53,23 @@
       border: 1px solid #e5e7eb;
       border-radius: 0.5rem;
       cursor: pointer;
-      padding: 0.5rem;
+      padding: 0.25rem;
+      box-sizing: border-box;
+      overflow: hidden; /* 🔹 evita que el contenido se desborde */
+      word-wrap: break-word;
     }
     .day-number {
       font-size: 0.875rem;
       color: #6b7280;
       text-align: right;
       width: 100%;
+      flex-shrink: 0;
     }
     .events-container {
       flex-grow: 1;
       overflow-y: auto;
       max-height: 90px;
-      margin-top: 0.5rem;
+      margin-top: 0.25rem;
     }
     .event {
       width: 100%;
@@ -131,7 +139,7 @@
   </div>
 
   <script>
-    const SPREADSHEET_ID = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo"; // tu ID
+    const SPREADSHEET_ID = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo";
     const SHEET_NAME = "Calendario";
     const RANGE = "A:H";
 
@@ -170,6 +178,7 @@
         };
       }).filter(e => e.startDate && e.endDate);
 
+      allEvents = events;
       return events;
     }
 
