@@ -139,11 +139,13 @@
         Visualización de los hitos y actividades clave de la consultoría en un formato de calendario.
     </p>
     <div id="calendar-container">
-        <div class="header">
+        <!-- 🔹 Cabecera con botones de navegación -->
+        <div class="header flex justify-between items-center mb-3">
           <button id="prev-month" class="btn btn-primary">&lt;</button>
-          <div class="month-year" id="month-year-display"></div>
+          <div class="month-year font-bold text-lg" id="month-year-display"></div>
           <button id="next-month" class="btn btn-primary">&gt;</button>
         </div>
+     <!-- 🔹 Grid del calendario -->
       <div class="calendar-grid" id="calendar-grid">
         <div class="day-name">Lun</div>
         <div class="day-name">Mar</div>
@@ -153,8 +155,9 @@
         <div class="day-name">Sáb</div>
         <div class="day-name">Dom</div>
       </div>
-    </div>
-    <div class="btn-group flex justify-center items-center space-x-4">
+     </div>
+    <!-- Botón regresar y pie del calendario -->
+     <div class="btn-group flex justify-center items-center space-x-4 mt-4">
       <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver a Infografía Principal</button>
     </div>
     <div class="calendar-footer">
@@ -183,11 +186,10 @@
     const modalTitle = document.getElementById("modal-title");
     const modalBody = document.getElementById("modal-body");
     const closeModal = document.getElementById("close-modal");
-
-        const monthYearDisplay = document.getElementById('month-year-display');
-    const prevMonthBtn = document.getElementById('prev-month');
-    const nextMonthBtn = document.getElementById('next-month');
-    const tooltipEl = document.getElementById('event-tooltip');
+// const monthYearDisplay = document.getElementById('month-year-display');
+ //   const prevMonthBtn = document.getElementById('prev-month');
+ //   const nextMonthBtn = document.getElementById('next-month');
+ //   const tooltipEl = document.getElementById('event-tooltip'); 
 
     let allEvents = [];
     let currentMonth = new Date().getMonth();
@@ -198,7 +200,13 @@
       const d = new Date(val);
       return isNaN(d) ? null : d;
     }
-
+ // 🔹 Parseo seguro de fechas
+      function parseDate(val) {
+      if (!val) return null;
+      const d = new Date(val);
+      return isNaN(d) ? null : d;
+    }
+   // 🔹 Traer datos desde Google Sheets
     async function fetchSheetData() {
       const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${RANGE}`;
       const res = await fetch(url);
@@ -221,22 +229,22 @@
       allEvents = events;
       return events;
     }
-
+ // 🔹 Renderizar el calendario
     function renderCalendar(month, year) {
       const oldDays = calendarGrid.querySelectorAll(".day");
       oldDays.forEach(el => el.remove());
 
       const firstDay = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
-
       let start = firstDay === 0 ? 6 : firstDay - 1;
-
+      
+   // 🔹 Espacios vacíos antes del primer día
       for (let i = 0; i < start; i++) {
         const empty = document.createElement("div");
         empty.classList.add("day");
         calendarGrid.appendChild(empty);
       }
-
+  // 🔹 Días del mes
       for (let d = 1; d <= daysInMonth; d++) {
         const dayEl = document.createElement("div");
         dayEl.classList.add("day");
@@ -277,13 +285,52 @@
         calendarGrid.appendChild(dayEl);
       }
     }
-
+    
+// 🔹 Cerrar modal
     closeModal.addEventListener("click", () => modal.style.display = "none");
     window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
 
-    async function init() {
-      allEvents = await fetchSheetData();
+// 🔹 Función para mostrar un mes específico y actualizar cabecera
+    const monthYearDisplay = document.getElementById('month-year-display');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+
+    function showMonth(month, year) {
+      currentMonth = month;
+      currentYear = year;
       renderCalendar(currentMonth, currentYear);
+
+      // 🔹 Actualiza cabecera del mes y año
+      const options = { month: 'long', year: 'numeric' };
+      monthYearDisplay.textContent = new Date(year, month).toLocaleDateString('es-ES', options);
+    }
+
+    // 🔹 Navegación meses anteriores
+    prevMonthBtn.addEventListener('click', () => {
+      let newMonth = currentMonth - 1;
+      let newYear = currentYear;
+      if (newMonth < 0) {
+        newMonth = 11;
+        newYear--;
+      }
+      showMonth(newMonth, newYear);
+    });
+
+    // 🔹 Navegación meses siguientes
+    nextMonthBtn.addEventListener('click', () => {
+      let newMonth = currentMonth + 1;
+      let newYear = currentYear;
+      if (newMonth > 11) {
+        newMonth = 0;
+        newYear++;
+      }
+      showMonth(newMonth, newYear);
+    });
+
+ // 🔹 Inicializar calendario  
+    async function init() {
+      await fetchSheetData();
+      showMonth(currentMonth, currentYear); // 🔹 Render inicial con cabecera
     }
 
     init();
