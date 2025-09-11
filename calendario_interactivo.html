@@ -13,7 +13,7 @@
       border-radius: 4px;
       margin-top: 2px;
       font-size: 0.75rem;
-      cursor: pointer; /* Nuevo: mostrar mano al pasar */
+      cursor: pointer;
     }
     .event:hover {
       opacity: 0.9;
@@ -25,7 +25,7 @@
   <h1 class="text-2xl font-bold text-blue-700 mb-4">📅 Plan de Trabajo: Diagnóstico en Villas Concordia</h1>
   <div id="calendar" class="grid grid-cols-7 gap-2"></div>
 
-  <!-- ==================== NUEVO MODAL PARA DETALLE DE ACTIVIDAD ==================== -->
+  <!-- ==================== MODAL DETALLE EVENTO ==================== -->
   <div id="event-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
     <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
       <h2 id="modal-title" class="text-xl font-bold text-blue-600 mb-4">Detalle del Evento</h2>
@@ -35,45 +35,37 @@
       </div>
     </div>
   </div>
-  <!-- ============================================================================== -->
 
   <script>
-    const sheetId = "TU_SHEET_ID"; // 👉 Reemplaza con el ID de tu hoja
-    const sheetName = "Gantt"; // 👉 Nombre de la hoja
-    const apiKey = "TU_API_KEY"; // 👉 Tu API Key de Google Sheets
+    const sheetId = "TU_SHEET_ID"; // 👉 reemplaza con tu ID de Google Sheet
+    const sheetName = "Gantt";
 
-    // ==================== FUNCIÓN: Parsear fechas ====================
+    // ==================== FUNCIÓN: Parsear fecha ====================
     function parseDate(value) {
       if (!value) return null;
       const date = new Date(value);
       return isNaN(date) ? null : date;
     }
 
-    // ==================== FUNCIÓN: Obtener datos de la hoja ====================
+    // ==================== FUNCIÓN: Leer datos de Google Sheets ====================
     async function fetchSheetData() {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}`;
       const res = await fetch(url);
-      const json = await res.json();
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
 
-      // Saltamos la fila 0 (encabezados) y mapeamos datos
-      const events = json.values.slice(1).map(row => {
-        const description = row[0];        // Col A
-        const category = row[2];           // Col C
-        const responsable = row[3];        // Col D (nuevo)
-        const progreso = row[4];           // Col E (nuevo)
-        const startDate = parseDate(row[5]); // Col F
-        const endDate = parseDate(row[6]);   // Col G
-        const dias = row[7];               // Col H (nuevo)
+      const events = json.table.rows.slice(1).map(row => {
+        const parts = row.c.map(cell => (cell && cell.v !== undefined) ? (cell.f || cell.v) : null);
 
-        return {
-          description,
-          category,
-          responsable,
-          progreso,
-          startDate,
-          endDate,
-          dias
-        };
+        const description = parts[0];          // Col A
+        const category = parts[2];             // Col C
+        const responsable = parts[3];          // Col D
+        const progreso = parts[4];             // Col E
+        const startDate = parseDate(parts[5]); // Col F
+        const endDate = parseDate(parts[6]);   // Col G
+        const dias = parts[7];                 // Col H
+
+        return { description, category, responsable, progreso, startDate, endDate, dias };
       }).filter(event => event.startDate && event.endDate);
 
       return events;
@@ -100,7 +92,7 @@
       const firstDay = new Date(year, month, 1).getDay();
       const lastDate = new Date(year, month + 1, 0).getDate();
 
-      // Celdas vacías al inicio
+      // Celdas vacías antes del 1
       for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement("div");
         calendarEl.appendChild(emptyCell);
@@ -119,7 +111,6 @@
         const eventsContainer = document.createElement("div");
         eventsContainer.classList.add("space-y-1");
 
-        // Insertar eventos que coinciden con este día
         const currentDate = new Date(year, month, date);
         events.forEach(event => {
           if (currentDate >= event.startDate && currentDate <= event.endDate) {
@@ -127,7 +118,7 @@
             eventEl.classList.add("event", `event-${event.category?.replace(/\s/g, '') || 'General'}`);
             eventEl.textContent = event.description;
 
-            // 👉 Nuevo: al hacer click, mostramos modal con detalle
+            // 👉 Nuevo: al hacer click, abrir modal con detalle
             eventEl.addEventListener("click", () => showEventModal(event));
 
             eventsContainer.appendChild(eventEl);
@@ -139,14 +130,13 @@
       }
     }
 
-    // ==================== FUNCIÓN: Mostrar modal con detalle ====================
+    // ==================== FUNCIÓN: Mostrar modal ====================
     function showEventModal(event) {
       const modal = document.getElementById("event-modal");
       const modalTitle = document.getElementById("modal-title");
       const modalContent = document.getElementById("modal-content");
 
       modalTitle.textContent = event.description;
-
       modalContent.innerHTML = `
         <p><strong>Responsable:</strong> ${event.responsable || "—"}</p>
         <p><strong>Progreso:</strong> ${event.progreso || "—"}</p>
