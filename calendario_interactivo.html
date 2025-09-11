@@ -3,161 +3,241 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plan de Trabajo: Diagnóstico en Villas Concordia</title>
+  <title>Calendario de la Consultoría</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 2rem;
+      box-sizing: border-box;
+    }
+    .container {
+      background-color: white;
+      border-radius: 1.5rem;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      width: 100%;
+      max-width: 1200px;
+      box-sizing: border-box;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 10px;
+    }
+    .day-name {
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      background-color: #e5e7eb;
+      color: #4b5563;
+    }
+    .day {
+      background-color: #f9fafb;
+      color: #1f2937;
+      position: relative;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+    .day-number {
+      font-size: 0.875rem;
+      color: #6b7280;
+      text-align: right;
+      width: 100%;
+    }
+    .events-container {
+      flex-grow: 1;
+      overflow-y: auto;
+      max-height: 90px;
+      margin-top: 0.5rem;
+    }
     .event {
-      background-color: #3b82f6;
-      color: white;
+      width: 100%;
+      margin: 2px 0;
+      border-radius: 0.25rem;
       padding: 2px 4px;
-      border-radius: 4px;
-      margin-top: 2px;
       font-size: 0.75rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: white;
+      font-weight: 500;
       cursor: pointer;
     }
-    .event:hover {
-      opacity: 0.9;
+    .event-Fase { background-color: #4a90e2; }
+    .event-Hito { background-color: #2dff8c; }
+    .event-Comunidad { background-color: #2ecc71; }
+    .event-FUSAL { background-color: #0000ff; }
+    .event-ASR { background-color: #f79646; }
+    .event-Reunión { background-color: #c0504d; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+    }
+    .modal-content {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      width: 100%;
+      max-width: 500px;
     }
   </style>
 </head>
-<body class="bg-gray-50 p-6">
+<body>
+  <div class="container">
+    <h1 class="text-xl font-bold text-blue-600 mb-4">Calendario de la Consultoría</h1>
 
-  <h1 class="text-2xl font-bold text-blue-700 mb-4">📅 Plan de Trabajo: Diagnóstico en Villas Concordia</h1>
-  <div id="calendar" class="grid grid-cols-7 gap-2"></div>
+    <div id="calendar-container">
+      <div class="calendar-grid" id="calendar-grid">
+        <div class="day-name">Lun</div>
+        <div class="day-name">Mar</div>
+        <div class="day-name">Mié</div>
+        <div class="day-name">Jue</div>
+        <div class="day-name">Vie</div>
+        <div class="day-name">Sáb</div>
+        <div class="day-name">Dom</div>
+      </div>
+    </div>
+  </div>
 
-  <!-- ==================== MODAL DETALLE EVENTO ==================== -->
-  <div id="event-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
-      <h2 id="modal-title" class="text-xl font-bold text-blue-600 mb-4">Detalle del Evento</h2>
-      <div id="modal-content" class="space-y-2 text-sm text-gray-700"></div>
-      <div class="mt-4 text-right">
-        <button id="close-modal" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Cerrar</button>
+  <!-- Modal -->
+  <div id="event-modal" class="modal">
+    <div class="modal-content">
+      <h2 id="modal-title" class="text-lg font-bold mb-2">Detalle del evento</h2>
+      <div id="modal-body" class="space-y-1 text-sm"></div>
+      <div class="text-right mt-3">
+        <button id="close-modal" class="px-4 py-2 bg-blue-600 text-white rounded">Cerrar</button>
       </div>
     </div>
   </div>
 
   <script>
-    const sheetId = "TU_SHEET_ID"; // 👉 reemplaza con tu ID de Google Sheet
-    const sheetName = "Gantt";
+    const SPREADSHEET_ID = "1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo"; // tu ID
+    const SHEET_NAME = "Calendario";
+    const RANGE = "A:H";
 
-    // ==================== FUNCIÓN: Parsear fecha ====================
-    function parseDate(value) {
-      if (!value) return null;
-      const date = new Date(value);
-      return isNaN(date) ? null : date;
+    const calendarGrid = document.getElementById("calendar-grid");
+    const modal = document.getElementById("event-modal");
+    const modalTitle = document.getElementById("modal-title");
+    const modalBody = document.getElementById("modal-body");
+    const closeModal = document.getElementById("close-modal");
+
+    let allEvents = [];
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+
+    function parseDate(val) {
+      if (!val) return null;
+      const d = new Date(val);
+      return isNaN(d) ? null : d;
     }
 
-    // ==================== FUNCIÓN: Leer datos de Google Sheets ====================
     async function fetchSheetData() {
-      const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?sheet=${sheetName}`;
+      const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}&range=${RANGE}`;
       const res = await fetch(url);
       const text = await res.text();
-      const json = JSON.parse(text.substring(47).slice(0, -2));
+      const json = JSON.parse(text.substr(47).slice(0, -2));
 
-      const events = json.table.rows.slice(1).map(row => {
-        const parts = row.c.map(cell => (cell && cell.v !== undefined) ? (cell.f || cell.v) : null);
-
-        const description = parts[0];          // Col A
-        const category = parts[2];             // Col C
-        const responsable = parts[3];          // Col D
-        const progreso = parts[4];             // Col E
-        const startDate = parseDate(parts[5]); // Col F
-        const endDate = parseDate(parts[6]);   // Col G
-        const dias = parts[7];                 // Col H
-
-        return { description, category, responsable, progreso, startDate, endDate, dias };
-      }).filter(event => event.startDate && event.endDate);
+      const events = json.table.rows.slice(1).map(r => {
+        const c = r.c.map(cell => cell ? (cell.f || cell.v) : null);
+        return {
+          description: c[0],
+          category: c[2],
+          responsable: c[3],
+          progreso: c[4],
+          startDate: parseDate(c[5]),
+          endDate: parseDate(c[6]),
+          dias: c[7]
+        };
+      }).filter(e => e.startDate && e.endDate);
 
       return events;
     }
 
-    // ==================== FUNCIÓN: Renderizar calendario ====================
-    function renderCalendar(events) {
-      const calendarEl = document.getElementById("calendar");
-      calendarEl.innerHTML = "";
+    function renderCalendar(month, year) {
+      const oldDays = calendarGrid.querySelectorAll(".day");
+      oldDays.forEach(el => el.remove());
 
-      // Encabezados de los días
-      const days = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-      days.forEach(day => {
-        const dayEl = document.createElement("div");
-        dayEl.classList.add("font-bold", "text-center", "p-2", "bg-gray-200");
-        dayEl.textContent = day;
-        calendarEl.appendChild(dayEl);
-      });
-
-      // Determinar mes actual
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = today.getMonth();
       const firstDay = new Date(year, month, 1).getDay();
-      const lastDate = new Date(year, month + 1, 0).getDate();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-      // Celdas vacías antes del 1
-      for (let i = 0; i < firstDay; i++) {
-        const emptyCell = document.createElement("div");
-        calendarEl.appendChild(emptyCell);
+      let start = firstDay === 0 ? 6 : firstDay - 1;
+
+      for (let i = 0; i < start; i++) {
+        const empty = document.createElement("div");
+        empty.classList.add("day");
+        calendarGrid.appendChild(empty);
       }
 
-      // Días del mes
-      for (let date = 1; date <= lastDate; date++) {
-        const dayCell = document.createElement("div");
-        dayCell.classList.add("border", "h-24", "p-1", "relative");
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dayEl = document.createElement("div");
+        dayEl.classList.add("day");
 
-        const dateEl = document.createElement("div");
-        dateEl.classList.add("text-xs", "text-gray-500");
-        dateEl.textContent = date;
-        dayCell.appendChild(dateEl);
+        const num = document.createElement("div");
+        num.classList.add("day-number");
+        num.textContent = d;
+        dayEl.appendChild(num);
 
-        const eventsContainer = document.createElement("div");
-        eventsContainer.classList.add("space-y-1");
+        const eventsC = document.createElement("div");
+        eventsC.classList.add("events-container");
 
-        const currentDate = new Date(year, month, date);
-        events.forEach(event => {
-          if (currentDate >= event.startDate && currentDate <= event.endDate) {
-            const eventEl = document.createElement("div");
-            eventEl.classList.add("event", `event-${event.category?.replace(/\s/g, '') || 'General'}`);
-            eventEl.textContent = event.description;
+        const current = new Date(year, month, d);
 
-            // 👉 Nuevo: al hacer click, abrir modal con detalle
-            eventEl.addEventListener("click", () => showEventModal(event));
+        allEvents.forEach(ev => {
+          if (current >= ev.startDate && current <= ev.endDate) {
+            const evEl = document.createElement("div");
+            evEl.classList.add("event", `event-${ev.category?.replace(/\s/g,"")}`);
+            evEl.textContent = ev.description;
 
-            eventsContainer.appendChild(eventEl);
+            evEl.addEventListener("click", () => {
+              modalTitle.textContent = ev.description;
+              modalBody.innerHTML = `
+                <p><strong>Responsable:</strong> ${ev.responsable || "-"}</p>
+                <p><strong>Progreso:</strong> ${ev.progreso || "-"}</p>
+                <p><strong>Inicio:</strong> ${ev.startDate.toLocaleDateString()}</p>
+                <p><strong>Fin:</strong> ${ev.endDate.toLocaleDateString()}</p>
+                <p><strong>Días:</strong> ${ev.dias || "-"}</p>
+              `;
+              modal.style.display = "flex";
+            });
+
+            eventsC.appendChild(evEl);
           }
         });
 
-        dayCell.appendChild(eventsContainer);
-        calendarEl.appendChild(dayCell);
+        dayEl.appendChild(eventsC);
+        calendarGrid.appendChild(dayEl);
       }
     }
 
-    // ==================== FUNCIÓN: Mostrar modal ====================
-    function showEventModal(event) {
-      const modal = document.getElementById("event-modal");
-      const modalTitle = document.getElementById("modal-title");
-      const modalContent = document.getElementById("modal-content");
+    closeModal.addEventListener("click", () => modal.style.display = "none");
+    window.addEventListener("click", (e) => { if (e.target === modal) modal.style.display = "none"; });
 
-      modalTitle.textContent = event.description;
-      modalContent.innerHTML = `
-        <p><strong>Responsable:</strong> ${event.responsable || "—"}</p>
-        <p><strong>Progreso:</strong> ${event.progreso || "—"}</p>
-        <p><strong>Inicio:</strong> ${event.startDate.toLocaleDateString()}</p>
-        <p><strong>Fin:</strong> ${event.endDate.toLocaleDateString()}</p>
-        <p><strong>Días:</strong> ${event.dias || "—"}</p>
-      `;
-
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
+    async function init() {
+      allEvents = await fetchSheetData();
+      renderCalendar(currentMonth, currentYear);
     }
 
-    // ==================== EVENTO: Cerrar modal ====================
-    document.getElementById("close-modal").addEventListener("click", () => {
-      const modal = document.getElementById("event-modal");
-      modal.classList.add("hidden");
-      modal.classList.remove("flex");
-    });
-
-    // ==================== INICIALIZACIÓN ====================
-    fetchSheetData().then(events => renderCalendar(events));
+    init();
   </script>
 </body>
 </html>
