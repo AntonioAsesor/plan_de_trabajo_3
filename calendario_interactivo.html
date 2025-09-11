@@ -86,12 +86,13 @@
             color: white;
             font-weight: 500;
         }
-        .event-Fase { background-color: #4a90e2; } /* Azul para fases */
-        .event-Hito { background-color: #2dff8c; } /* Rojo para hitos*/
-        .event-Comunidad { background-color: #2ecc71; } /* Verde para comunidad */
-        .event-FUSAL { background-color: #0000ff; } /* Púrpura para FUSAL */
-        .event-ASR { background-color: #f79646; } /* Naranja para ASR */
-        .event-Reunión { background-color: #c0504d; } /* Gris oscuro para reuniones */
+        /* Nuevos colores para los eventos */
+        .event-Fase { background-color: #4a90e2; }
+        .event-Hito { background-color: #2dff8c; }
+        .event-Comunidad { background-color: #2ecc71; }
+        .event-FUSAL { background-color: #0000ff; }
+        .event-ASR { background-color: #f79646; }
+        .event-Reunión { background-color: #c0504d; }
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: 9999px;
@@ -135,7 +136,7 @@
 
     <div class="loading-text" id="loading">Cargando datos del calendario...</div>
     <div class="error-text hidden" id="error">
-        Hubo un error al cargar los datos. Por favor, asegúrate de que el enlace de la hoja de cálculo sea correcto y de que el archivo es público.
+        Error: No se encontraron eventos válidos. Revisa el formato de fechas y las columnas en tu hoja de cálculo.
     </div>
 
     <div id="calendar-container" class="hidden">
@@ -181,33 +182,65 @@
     let currentYear = new Date().getFullYear();
     let allEvents = [];
 
+    // Función para analizar la fecha de diferentes formatos
+    function parseDate(dateValue) {
+        if (!dateValue) return null;
+        
+        // Intenta el formato "Date(año,mes,día)" de Google Sheets
+        const dateMatch = String(dateValue).match(/Date\((\d+),(\d+),(\d+)\)/);
+        if (dateMatch) {
+            const year = parseInt(dateMatch[1]);
+            // El mes en JavaScript es 0-11, Google Sheets es 0-11
+            const month = parseInt(dateMatch[2]);
+            const day = parseInt(dateMatch[3]);
+            return new Date(year, month, day);
+        }
+
+        // Intenta el formato de fecha normal (ej. "2025-01-20")
+        const parsedDate = new Date(dateValue);
+        if (!isNaN(parsedDate.getTime())) {
+            return parsedDate;
+        }
+
+        return null;
+    }
+
     // Función para obtener los datos de Google Sheets
     async function fetchSheetData() {
         try {
             const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
             const response = await fetch(url);
+            
             if (!response.ok) {
-                throw new Error('Error en la red o en el enlace de la hoja de cálculo.');
+                console.error('Error de red al cargar la hoja de cálculo:', response.statusText);
+                throw new Error('Error en la red.');
             }
+            
             const text = await response.text();
+            console.log('Respuesta cruda de Google Sheets:', text);
+
             const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
             const data = JSON.parse(jsonText);
             
+            console.log('Datos analizados:', data.table.rows);
+
             const events = data.table.rows.slice(1).map(row => {
-                const parts = row.c.map(cell => (cell && cell.v !== undefined) ? cell.v : null);
-                // Extraer los datos de la fila según los índices
+                const parts = row.c.map(cell => (cell && cell.v !== undefined) ? (cell.f || cell.v) : null);
+                
                 const description = parts[0];
                 const category = parts[2];
-                const startDate = new Date(parts[5].v);
-                const endDate = new Date(parts[6].v);
-
+                const startDate = parseDate(parts[5]);
+                const endDate = parseDate(parts[6]);
+                
                 return {
-                    description,
-                    category,
-                    startDate,
-                    endDate
+                    description: description,
+                    category: category,
+                    startDate: startDate,
+                    endDate: endDate
                 };
-            });
+            }).filter(event => event.startDate && event.endDate); // Filtramos los eventos sin fechas válidas
+
+            console.log('Eventos filtrados y listos:', events);
             return events;
         } catch (error) {
             console.error('Fetch error:', error);
@@ -218,26 +251,22 @@
 
     // Función para renderizar el calendario para un mes y año dados
     function renderCalendar(month, year) {
-        // Limpiar el calendario antes de renderizar
         const daysContainer = calendarGrid.querySelectorAll('.day');
         daysContainer.forEach(day => day.remove());
 
         const firstDayOfMonth = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
-        // Ajustar el primer día para que la semana empiece en Lunes (0 es Domingo)
         let firstDayAdjusted = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
         
         monthYearDisplay.textContent = new Date(year, month).toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
-        // Días vacíos al inicio del mes
         for (let i = 0; i < firstDayAdjusted; i++) {
             const emptyDay = document.createElement('div');
             emptyDay.classList.add('day');
             calendarGrid.appendChild(emptyDay);
         }
 
-        // Días del mes
         for (let i = 1; i <= daysInMonth; i++) {
             const dayEl = document.createElement('div');
             dayEl.classList.add('day');
@@ -248,11 +277,13 @@
             dayEl.appendChild(dayNumberEl);
 
             const currentDate = new Date(year, month, i);
+            currentDate.setHours(0, 0, 0, 0);
             
-            // Renderizar eventos para el día actual
             allEvents.forEach(event => {
                 const startDate = new Date(event.startDate);
+                startDate.setHours(0, 0, 0, 0);
                 const endDate = new Date(event.endDate);
+                endDate.setHours(0, 0, 0, 0);
 
                 if (currentDate >= startDate && currentDate <= endDate) {
                     const eventEl = document.createElement('div');
