@@ -91,6 +91,28 @@
     .event-ASR { background-color: #f79646; }
     .event-Reunión { background-color: #c0504d; }
 
+     .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1765cc;
+        }
+        .loading-text, .error-text {
+            text-align: center;
+            font-size: 1.25rem;
+            margin-top: 2rem;
+        }
+        .hidden {
+            display: none;
+        }
+    .calendar-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
     /* Modal */
     .modal {
       display: none;
@@ -113,7 +135,9 @@
 <body>
   <div class="container">
     <h1 class="text-xl font-bold text-blue-600 mb-4">Calendario de la Consultoría</h1>
-
+    <p class="text-gray-700 my-3" style="text-align:left">
+        Visualización de los hitos y actividades clave de la consultoría en un formato de calendario.
+    </p>
     <div id="calendar-container">
       <div class="calendar-grid" id="calendar-grid">
         <div class="day-name">Lun</div>
@@ -125,8 +149,15 @@
         <div class="day-name">Dom</div>
       </div>
     </div>
-  </div>
+        <div class="btn-group flex justify-center items-center space-x-4">
+        <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver a Infografía Principal</button>
+    </div>
 
+    <div class="calendar-footer">
+        *Los colores indican la categoría de la actividad.
+    </div>
+  </div>
+  
   <!-- Modal -->
   <div id="event-modal" class="modal">
     <div class="modal-content">
