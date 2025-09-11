@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendario de la Consultoría</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            background-color: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .header-title {
+            color: #1a73e8;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+        }
+        .day-name, .day {
+            text-align: center;
+            padding: 1rem 0;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+        .day-name {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+        .day {
+            background-color: #f9fafb;
+            color: #1f2937;
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
+            border: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .day:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .day-number {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .event {
+            width: 90%;
+            margin: 2px auto;
+            border-radius: 0.25rem;
+            padding: 2px 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: white;
+            font-weight: 500;
+        }
+        .event-Fase { background-color: #4a90e2; } /* Azul para fases */
+        .event-Hito { background-color: #2dff8c; } /* Rojo para hitos*/
+        .event-Comunidad { background-color: #2ecc71; } /* Verde para comunidad */
+        .event-FUSAL { background-color: #0000ff; } /* Púrpura para FUSAL */
+        .event-ASR { background-color: #f79646; } /* Naranja para ASR */
+        .event-Reunión { background-color: #c0504d; } /* Gris oscuro para reuniones */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #1765cc;
+        }
+        .loading-text, .error-text {
+            text-align: center;
+            font-size: 1.25rem;
+            margin-top: 2rem;
+        }
+        .hidden {
+            display: none;
+        }
+        .month-year {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .calendar-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-title">Calendario de la Consultoría</div>
+    <p class="text-gray-700 my-3" style="text-align:left">
+        Visualización de los hitos y actividades clave de la consultoría en un formato de calendario.
+    </p>
+
+    <div class="loading-text" id="loading">Cargando datos del calendario...</div>
+    <div class="error-text hidden" id="error">
+        Hubo un error al cargar los datos. Por favor, asegúrate de que el enlace de la hoja de cálculo sea correcto y de que el archivo es público.
+    </div>
+
+    <div id="calendar-container" class="hidden">
+        <div class="header">
+            <button id="prev-month" class="btn btn-primary">&lt;</button>
+            <div class="month-year" id="month-year-display"></div>
+            <button id="next-month" class="btn btn-primary">&gt;</button>
+        </div>
+        <div class="calendar-grid" id="calendar-grid">
+            <div class="day-name">Lun</div>
+            <div class="day-name">Mar</div>
+            <div class="day-name">Mié</div>
+            <div class="day-name">Jue</div>
+            <div class="day-name">Vie</div>
+            <div class="day-name">Sáb</div>
+            <div class="day-name">Dom</div>
+        </div>
+    </div>
+    
+    <div class="btn-group flex justify-center items-center space-x-4">
+        <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver a Infografía Principal</button>
+    </div>
+
+    <div class="calendar-footer">
+        *Los colores indican la categoría de la actividad.
+    </div>
+</div>
+
+<script>
+    const SPREADSHEET_ID = '1G3yqAu5oMCxuc1HtreBRDiMDyXNcvaIo';
+    const SHEET_NAME = 'Calendario';
+    const RANGE = 'A:H';
+
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const calendarContainerEl = document.getElementById('calendar-container');
+    const calendarGrid = document.getElementById('calendar-grid');
+    const monthYearDisplay = document.getElementById('month-year-display');
+    const prevMonthBtn = document.getElementById('prev-month');
+    const nextMonthBtn = document.getElementById('next-month');
+
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let allEvents = [];
+
+    // Función para obtener los datos de Google Sheets
+    async function fetchSheetData() {
+        try {
+            const url = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(SHEET_NAME)}&range=${RANGE}`;
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Error en la red o en el enlace de la hoja de cálculo.');
+            }
+            const text = await response.text();
+            const jsonText = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+            const data = JSON.parse(jsonText);
+            
+            const events = data.table.rows.slice(1).map(row => {
+                const parts = row.c.map(cell => (cell && cell.v !== undefined) ? cell.v : null);
+                // Extraer los datos de la fila según los índices
+                const description = parts[0];
+                const category = parts[2];
+                const startDate = new Date(parts[5].v);
+                const endDate = new Date(parts[6].v);
+
+                return {
+                    description,
+                    category,
+                    startDate,
+                    endDate
+                };
+            });
+            return events;
+        } catch (error) {
+            console.error('Fetch error:', error);
+            errorEl.classList.remove('hidden');
+            return [];
+        }
+    }
+
+    // Función para renderizar el calendario para un mes y año dados
+    function renderCalendar(month, year) {
+        // Limpiar el calendario antes de renderizar
+        const daysContainer = calendarGrid.querySelectorAll('.day');
+        daysContainer.forEach(day => day.remove());
+
+        const firstDayOfMonth = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        
+        // Ajustar el primer día para que la semana empiece en Lunes (0 es Domingo)
+        let firstDayAdjusted = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+        
+        monthYearDisplay.textContent = new Date(year, month).toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+
+        // Días vacíos al inicio del mes
+        for (let i = 0; i < firstDayAdjusted; i++) {
+            const emptyDay = document.createElement('div');
+            emptyDay.classList.add('day');
+            calendarGrid.appendChild(emptyDay);
+        }
+
+        // Días del mes
+        for (let i = 1; i <= daysInMonth; i++) {
+            const dayEl = document.createElement('div');
+            dayEl.classList.add('day');
+            
+            const dayNumberEl = document.createElement('span');
+            dayNumberEl.classList.add('day-number');
+            dayNumberEl.textContent = i;
+            dayEl.appendChild(dayNumberEl);
+
+            const currentDate = new Date(year, month, i);
+            
+            // Renderizar eventos para el día actual
+            allEvents.forEach(event => {
+                const startDate = new Date(event.startDate);
+                const endDate = new Date(event.endDate);
+
+                if (currentDate >= startDate && currentDate <= endDate) {
+                    const eventEl = document.createElement('div');
+                    eventEl.classList.add('event', `event-${event.category.replace(/\s/g, '')}`);
+                    eventEl.textContent = event.description;
+                    dayEl.appendChild(eventEl);
+                }
+            });
+
+            calendarGrid.appendChild(dayEl);
+        }
+    }
+
+    // Navegación por el calendario
+    prevMonthBtn.addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        renderCalendar(currentMonth, currentYear);
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        renderCalendar(currentMonth, currentYear);
+    });
+
+    // Inicializar el calendario
+    async function init() {
+        loadingEl.classList.remove('hidden');
+        allEvents = await fetchSheetData();
+        loadingEl.classList.add('hidden');
+
+        if (allEvents.length > 0) {
+            calendarContainerEl.classList.remove('hidden');
+            renderCalendar(currentMonth, currentYear);
+        } else {
+            errorEl.classList.remove('hidden');
+        }
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
