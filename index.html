@@ -697,7 +697,7 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Marcador central
+    // Marcador central OJO
     L.marker(center)
         .addTo(map)
         .bindPopup("<b>La Concordia</b><br>Zona de estudio")
@@ -718,24 +718,27 @@
     }).addTo(map)
       .bindPopup("Área aproximada de estudio");
 
-    // ================== ÍCONOS PERSONALIZADOS ==================
-    const iconEscuela = L.AwesomeMarkers.icon({
-        icon: 'school',
-        markerColor: 'blue',
-        prefix: 'fa'
-    });
-    const iconIglesia = L.AwesomeMarkers.icon({
-        icon: 'church',
-        markerColor: 'orange',
-        prefix: 'fa'
-    });
+ // ================== ÍCONOS PERSONALIZADOS ==================
+     // Usaremos este ícono para todas las empresas de tu hoja de Google
     const iconEmpresa = L.AwesomeMarkers.icon({
         icon: 'building',
         markerColor: 'green',
         prefix: 'fa'
     });
+   // Usaremos este ícono para escuela
+    const iconEscuela = L.AwesomeMarkers.icon({
+        icon: 'school',
+        markerColor: 'blue',
+        prefix: 'fa'
+    });
+   // Usaremos este ícono para Iglesia
+    const iconIglesia = L.AwesomeMarkers.icon({
+        icon: 'church',
+        markerColor: 'orange',
+        prefix: 'fa'
+    });
 
-    // ================== MARCADORES MANUALES ==================
+    // ================== MARCADORES MANUALES Danilo lo hace Manual==================
     // Escuela La Concordia
     L.marker([13.2801, -88.5820], { icon: iconEscuela })
       .addTo(map)
@@ -750,39 +753,83 @@
     L.marker([13.2795, -88.5842], { icon: iconEmpresa })
       .addTo(map)
       .bindPopup("<b>Empresa ABC</b><br>Punto estratégico");
+
+// ================== CARGAR DATOS DE GOOGLE SHEETS ==================
+    // URL de tu Google Sheet publicado como CSV
+    // **IMPORTANTE**: Reemplaza esta URL con la tuya.
+    const googleSheetUrl = 'TU_URL_DE_GOOGLE_SHEET_PUBLICADO_COMO_CSV';
+
+    // Función para procesar los datos del CSV y agregar marcadores
+    function processDataAndAddMarkers(data) {
+        // Separa las filas del CSV
+        const rows = data.split('\n');
+        // El encabezado es la primera fila
+        const headers = rows[0].split(',');
+        
+        // Encuentra el índice de las columnas que necesitamos
+        // La columna H es la 'coordenadas_gps_empresa'
+        // La columna C es el 'nombre_empresa_emprendimiento'
+        // La columna O es el 'tipo_actividad_economica'
+        const latLongIndex = headers.indexOf('"coordenadas_gps_empresa"');
+        const nombreEmpresaIndex = headers.indexOf('"nombre_empresa_emprendimiento"');
+        const tipoActividadIndex = headers.indexOf('"tipo_actividad_economica"');
+
+        // Itera sobre las filas, saltando el encabezado
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i].split(',');
+            
+            // Si la fila no tiene datos de latitud/longitud, la saltamos
+            if (!row[latLongIndex]) {
+                continue;
+            }
+
+            // Elimina las comillas dobles y espacios del principio/fin
+            const coordsString = row[latLongIndex].replace(/"/g, '').trim();
+            const nombreEmpresa = row[nombreEmpresaIndex] ? row[nombreEmpresaIndex].replace(/"/g, '').trim() : 'Nombre no disponible';
+            const tipoActividad = row[tipoActividadIndex] ? row[tipoActividadIndex].replace(/"/g, '').trim() : 'Actividad no disponible';
+            
+            // Convierte la cadena de coordenadas 'lat,long' en un array de números
+            const coords = coordsString.split(',').map(Number);
+            const lat = coords[0];
+            const long = coords[1];
+            
+            // Asegúrate de que las coordenadas sean números válidos
+            if (isNaN(lat) || isNaN(long)) {
+                console.error('Coordenadas no válidas:', coordsString);
+                continue;
+            }
+
+            // Crea el marcador con el ícono personalizado
+            const marker = L.marker([lat, long], { icon: iconEmpresa })
+                .addTo(map);
+
+            // Crea el contenido del popup
+            const popupContent = `<b>${nombreEmpresa}</b><br>${tipoActividad}`;
+            
+            // Vincula el popup al marcador
+            marker.bindPopup(popupContent);
+        }
+    }
+
+    // Usar la función fetch para obtener el CSV
+    fetch(googleSheetUrl)
+        .then(response => {
+            // Verifica si la respuesta es exitosa
+            if (!response.ok) {
+                throw new Error('Error al cargar el Google Sheet. Código de estado: ' + response.status);
+            }
+            // Convierte la respuesta a texto
+            return response.text();
+        })
+        .then(data => {
+            // Llama a la función para procesar los datos y agregar los marcadores
+            processDataAndAddMarkers(data);
+        })
+        .catch(error => {
+            console.error('Hubo un problema con la operación de fetch:', error);
+        });
+// <!-- ================== FIN CARGAR DATOS DE GOOGLE SHEETS ================== -->
 </script>
-<!-- ================== FIN MAPA LEAFLET ================== -->
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
