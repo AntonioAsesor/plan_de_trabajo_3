@@ -141,10 +141,11 @@
     <div id="calendar-container">
         <!-- 🔹 Cabecera con botones de navegación -->
         <div class="header flex justify-between items-center mb-3">
-          <button id="prev-month" class="btn btn-primary">&lt;</button>
+          <button id="prev-month" class="px-4 py-2 text-lg mx-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">&lt;</button>
           <div class="month-year font-bold text-lg" id="month-year-display"></div>
-          <button id="next-month" class="btn btn-primary">&gt;</button>
-        </div>
+          <button id="next-month" class="px-4 py-2 text-lg mx-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">&gt;</button>
+      </div>
+      
      <!-- 🔹 Grid del calendario -->
       <div class="calendar-grid" id="calendar-grid">
         <div class="day-name">Lun</div>
@@ -157,9 +158,11 @@
       </div>
      </div>
     <!-- Botón regresar y pie del calendario -->
-     <div class="btn-group flex justify-center items-center space-x-4 mt-4">
-      <button class="btn btn-primary" onclick="window.location.href='index.html'">Volver a Infografía Principal</button>
+     <div class="px-6 py-2 bg-blue-600 text-white font-semibold rounded-md shadow hover:bg-blue-700 transition"
+       onclick="window.location.href='index.html'">
+        Volver a Infografía Principal</button>
     </div>
+    
     <div class="calendar-footer">
       *Los colores indican la categoría de la actividad.
     </div>
