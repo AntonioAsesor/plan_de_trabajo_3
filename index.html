@@ -736,8 +736,8 @@
     ];
 
     L.polygon(zonaEstudio, {
-        color: "#2605BF",
-        fillColor: "##99E3E0",
+        color: "#005f73",
+        fillColor: "#94d2bd",
         fillOpacity: 0.4
     }).addTo(map)
       .bindPopup("Área aproximada de estudio");
@@ -784,6 +784,7 @@ const iconIglesia = L.divIcon({
     // URL de tu hoja de Google "GeoComunidad"
     // CAMBIA ESTA URL POR LA DE TU HOJA DE HOGARES
     const hogaresSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfLm5HbWJM27UGRxWBAApKg1Fk3iYXFrRSO9Jd06QlW0NUFRySd7432buoEjUUTClhzjqM6eoWv63Y/pub?gid=34113902&single=true&output=csv';
+  
     function loadHogares() {
         fetch(hogaresSheetUrl)
             .then(response => response.text())
@@ -884,6 +885,7 @@ const iconIglesia = L.divIcon({
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
