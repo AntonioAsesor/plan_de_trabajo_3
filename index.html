@@ -708,7 +708,6 @@
         });
     </script>
 <!-- ================== MAPA LEAFLET ================== -->
-<!-- ================== MAPA LEAFLET ================== -->
 <script>
     // Coordenadas de La Concordia, Jiquilisco, Usulután
     const center = [13.2803, -88.5831];
@@ -742,25 +741,26 @@
     }).addTo(map)
       .bindPopup("Área aproximada de estudio");
 
- // ================== ÍCONOS PERSONALIZADOS ==================
-     // Usaremos este ícono para todas las empresas de tu hoja de Google
-    const iconEmpresa = L.AwesomeMarkers.icon({
-        icon: 'building',
-        markerColor: 'green',
-        prefix: 'fa'
-    });
-   // Usaremos este ícono para escuela
-    const iconEscuela = L.AwesomeMarkers.icon({
-        icon: 'school',
-        markerColor: 'blue',
-        prefix: 'fa'
-    });
-   // Usaremos este ícono para Iglesia
-    const iconIglesia = L.AwesomeMarkers.icon({
-        icon: 'church',
-        markerColor: 'orange',
-        prefix: 'fa'
-    });
+// ================== ÍCONOS PERSONALIZADOS (NUEVA VERSIÓN) ==================
+// Usaremos L.divIcon para crear íconos personalizados de Font Awesome
+const iconEmpresa = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fas fa-building" style="color: green; font-size: 24px;"></i>',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24]
+});
+const iconEscuela = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fas fa-school" style="color: blue; font-size: 24px;"></i>',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24]
+});
+const iconIglesia = L.divIcon({
+    className: 'custom-icon',
+    html: '<i class="fas fa-church" style="color: orange; font-size: 24px;"></i>',
+    iconSize: [24, 24],
+    iconAnchor: [12, 24]
+});
 
     // ================== MARCADORES MANUALES Danilo lo hace Manual==================
     // Escuela La Concordia
@@ -884,6 +884,7 @@
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
