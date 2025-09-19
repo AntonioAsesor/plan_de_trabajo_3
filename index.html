@@ -725,7 +725,7 @@
         .bindPopup("<b>La Concordia</b><br>Zona de estudio")
         .openPopup();
 
-    // Polígono de la zona de estudio
+    // Polígono de la zona de estudio existente
     const zonaEstudio = [
         [13.2825, -88.5860],
         [13.2820, -88.5800],
@@ -777,84 +777,112 @@
       .bindPopup("<b>Empresa ABC</b><br>Punto estratégico");
 
 // ================== CARGAR DATOS DE GOOGLE SHEETS ==================
-    // URL de tu Google Sheet publicado como CSV
+    // ================== CAPA 1: HOGARES Y PERÍMETRO ==================
+    // URL de tu hoja de Google "GeoComunidad"
+    // CAMBIA ESTA URL POR LA DE TU HOJA DE HOGARES
+    const hogaresSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfLm5HbWJM27UGRxWBAApKg1Fk3iYXFrRSO9Jd06QlW0NUFRySd7432buoEjUUTClhzjqM6eoWv63Y/pub?gid=34113902&single=true&output=csv';
+
+    function loadHogares() {
+        fetch(hogaresSheetUrl)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');
+                const headers = rows[0].split(',');
+                const latLongIndex = headers.indexOf('LatLong'); // <-- DANILO CAMBIA ESTO si tu columna se llama diferente
+
+                const hogaresCoords = [];
+
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i].split(',');
+                    const coordsString = row[latLongIndex] ? row[latLongIndex].replace(/"/g, '').trim() : '';
+
+                    if (coordsString) {
+                        const coords = coordsString.split(',').map(Number);
+                        const lat = coords[0];
+                        const long = coords[1];
+
+                        if (!isNaN(lat) && !isNaN(long)) {
+                            hogaresCoords.push([lat, long]);
+
+                         // Dibuja un círculo marcador para cada hogar
+                            L.circleMarker([lat, long], {
+                                radius: 5,
+                                color: 'blue',
+                                fillColor: '#007BFF',
+                                fillOpacity: 0.6
+                            }).addTo(map)
+                              .bindPopup("Hogar de la comunidad");
+                        }
+                    }
+                }
+                
+             // Dibuja el polígono del perímetro de la comunidad usando todos los puntos
+                if (hogaresCoords.length > 0) {
+                    L.polygon(hogaresCoords, {
+                        color: "blue",
+                        fillColor: "lightblue",
+                        fillOpacity: 0.2
+                    }).addTo(map)
+                      .bindPopup("Perímetro de la comunidad");
+                }
+            })
+            .catch(error => console.error('Error al cargar la data de hogares:', error));
+    }
+    
+     // ================== CAPA 2: EMPRESAS ==================
+    // URL de tu Google Sheet de empresas publicado como CSV
     // **IMPORTANTE**: Reemplaza esta URL con la tuya.
-    const googleSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfLm5HbWJM27UGRxWBAApKg1Fk3iYXFrRSO9Jd06QlW0NUFRySd7432buoEjUUTClhzjqM6eoWv63Y/pub?gid=2075521214&single=true&output=csv';
+    const empresasSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfLm5HbWJM27UGRxWBAApKg1Fk3iYXFrRSO9Jd06QlW0NUFRySd7432buoEjUUTClhzjqM6eoWv63Y/pub?gid=2075521214&single=true&output=csv';
+    function loadEmpresas() {
+        fetch(empresasSheetUrl)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n');
+                const headers = rows[0].split(',');
 
-    // Función para procesar los datos del CSV y agregar marcadores
-    function processDataAndAddMarkers(data) {
-        // Separa las filas del CSV
-        const rows = data.split('\n');
-        // El encabezado es la primera fila
-        const headers = rows[0].split(',');
-        
-        // Encuentra el índice de las columnas que necesitamos
-        // La columna H es la 'coordenadas_gps_empresa'
-        // La columna C es el 'nombre_empresa_emprendimiento'
-        // La columna O es el 'tipo_actividad_economica'
-        const latLongIndex = headers.indexOf('"coordenadas_gps_empresa"');
-        const nombreEmpresaIndex = headers.indexOf('"nombre_empresa_emprendimiento"');
-        const tipoActividadIndex = headers.indexOf('"tipo_actividad_economica"');
+                const latLongIndex = headers.indexOf('"coordenadas_gps_empresa"');
+                const nombreEmpresaIndex = headers.indexOf('"nombre_empresa_emprendimiento"');
+                const tipoActividadIndex = headers.indexOf('"tipo_actividad_economica"');
 
-        // Itera sobre las filas, saltando el encabezado
-        for (let i = 1; i < rows.length; i++) {
-            const row = rows[i].split(',');
-            
-            // Si la fila no tiene datos de latitud/longitud, la saltamos
-            if (!row[latLongIndex]) {
-                continue;
-            }
+                for (let i = 1; i < rows.length; i++) {
+                    const row = rows[i].split(',');
 
-            // Elimina las comillas dobles y espacios del principio/fin
-            const coordsString = row[latLongIndex].replace(/"/g, '').trim();
-            const nombreEmpresa = row[nombreEmpresaIndex] ? row[nombreEmpresaIndex].replace(/"/g, '').trim() : 'Nombre no disponible';
-            const tipoActividad = row[tipoActividadIndex] ? row[tipoActividadIndex].replace(/"/g, '').trim() : 'Actividad no disponible';
-            
-            // Convierte la cadena de coordenadas 'lat,long' en un array de números
-            const coords = coordsString.split(',').map(Number);
-            const lat = coords[0];
-            const long = coords[1];
-            
-            // Asegúrate de que las coordenadas sean números válidos
-            if (isNaN(lat) || isNaN(long)) {
-                console.error('Coordenadas no válidas:', coordsString);
-                continue;
-            }
+                    if (!row[latLongIndex]) {
+                        continue;
+                    }
 
-            // Crea el marcador con el ícono personalizado
-            const marker = L.marker([lat, long], { icon: iconEmpresa })
-                .addTo(map);
+                    const coordsString = row[latLongIndex].replace(/"/g, '').trim();
+                    const nombreEmpresa = row[nombreEmpresaIndex] ? row[nombreEmpresaIndex].replace(/"/g, '').trim() : 'Nombre no disponible';
+                    const tipoActividad = row[tipoActividadIndex] ? row[tipoActividadIndex].replace(/"/g, '').trim() : 'Actividad no disponible';
 
-            // Crea el contenido del popup
-            const popupContent = `<b>${nombreEmpresa}</b><br>${tipoActividad}`;
-            
-            // Vincula el popup al marcador
-            marker.bindPopup(popupContent);
-        }
+                    const coords = coordsString.split(',').map(Number);
+                    const lat = coords[0];
+                    const long = coords[1];
+
+                    if (isNaN(lat) || isNaN(long)) {
+                        console.error('Coordenadas no válidas:', coordsString);
+                        continue;
+                    }
+
+                    const marker = L.marker([lat, long], { icon: iconEmpresa })
+                        .addTo(map);
+
+                    const popupContent = `<b>${nombreEmpresa}</b><br>${tipoActividad}`;
+                    marker.bindPopup(popupContent);
+                }
+            })
+            .catch(error => console.error('Hubo un problema con la operación de fetch de empresas:', error));
     }
 
-    // Usar la función fetch para obtener el CSV
-    fetch(googleSheetUrl)
-        .then(response => {
-            // Verifica si la respuesta es exitosa
-            if (!response.ok) {
-                throw new Error('Error al cargar el Google Sheet. Código de estado: ' + response.status);
-            }
-            // Convierte la respuesta a texto
-            return response.text();
-        })
-        .then(data => {
-            // Llama a la función para procesar los datos y agregar los marcadores
-            processDataAndAddMarkers(data);
-        })
-        .catch(error => {
-            console.error('Hubo un problema con la operación de fetch:', error);
-        });
 // <!-- ================== FIN CARGAR DATOS DE GOOGLE SHEETS ================== -->
+        // Llama a las funciones para cargar las capas
+    loadHogares();
+    loadEmpresas();
 </script>
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
