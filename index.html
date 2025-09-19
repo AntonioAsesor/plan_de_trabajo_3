@@ -784,7 +784,6 @@ const iconIglesia = L.divIcon({
     // URL de tu hoja de Google "GeoComunidad"
     // CAMBIA ESTA URL POR LA DE TU HOJA DE HOGARES
     const hogaresSheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQfLm5HbWJM27UGRxWBAApKg1Fk3iYXFrRSO9Jd06QlW0NUFRySd7432buoEjUUTClhzjqM6eoWv63Y/pub?gid=34113902&single=true&output=csv';
-
     function loadHogares() {
         fetch(hogaresSheetUrl)
             .then(response => response.text())
@@ -822,7 +821,7 @@ const iconIglesia = L.divIcon({
              // Dibuja el polígono del perímetro de la comunidad usando todos los puntos
                 if (hogaresCoords.length > 0) {
                     L.polygon(hogaresCoords, {
-                        color: "blue",
+                        color: "red",
                         fillColor: "lightblue",
                         fillOpacity: 0.2
                     }).addTo(map)
@@ -885,6 +884,7 @@ const iconIglesia = L.divIcon({
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
