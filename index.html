@@ -11,6 +11,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Leaflet CSS para mapas-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Agregamos plugin para medir distancias en los mapas-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-measure-path/leaflet-measure-path.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet-measure-path/leaflet-measure-path.js"></script>
     <!-- Leaflet JS para mapas-->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <!-- Agregamos los estilos de Awesome Markers CORRECTOS-->
@@ -715,6 +718,7 @@
 
     // Inicializar mapa
     const map = L.map('map').setView(center, 15);
+    L.control.measurePath({ position: 'topright' }).addTo(map);
 
     // Cargar la capa base de OpenStreetMap
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -905,6 +909,7 @@ const iconIglesia = L.divIcon({
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
