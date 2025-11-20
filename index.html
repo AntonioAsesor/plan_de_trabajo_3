@@ -758,7 +758,7 @@
     // Marcador central de Villa La Concordia (punto original de enfoque)
     L.marker(center)
         .addTo(map)
-        .bindPopup("<b>La Concordia</b><br>Zona de estudio")
+        .bindPopup("<b>La Concordia</b><br>Zona de estudio:<br>53.69 Hectáreas aprox.")
         .openPopup();
 
     // Polígono de la zona de estudio existente
@@ -828,6 +828,11 @@
         fillColor: "#ffc8dd", // Rosa pálido
         fillOpacity: 0.4
     }).addTo(map)
+            // Marcador central de El Palomar (punto original de enfoque)
+    L.marker(center)
+        .addTo(map)
+        .bindPopup("<b>El Palomar</b><br>Zona de estudio:<br>39.44 Hectáreas aprox.")
+        .openPopup();
       .bindPopup("Área de estudio: El Palomar")
       // NUEVO: Agrega la etiqueta permanente para El Palomar
       .bindTooltip("El Palomar", {
@@ -991,6 +996,7 @@ const iconIglesia = L.divIcon({
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
