@@ -169,7 +169,7 @@
         <section id="zona-estudio" class="my-8">
           <div class="container mx-auto px-4 py-6">
             <h2 class="text-2xl font-bold text-[#005f73] mb-4">Zona de estudio de la consultoría (Villa La Concordia y El Palomar)</h2>
-            <div id="map" class="rounded-lg shadow-md" style="height: 400px;"></div>
+            <div id="map" class="rounded-lg shadow-md" style="height: 450px;"></div>
           </div>
         </section>
         
@@ -744,7 +744,7 @@
 <!-- ================== MAPA LEAFLET ================== -->
 <script>
     // Coordenadas de La Concordia, Jiquilisco, Usulután
-    const center = [13.3275, -88.5425];
+    const center = [13.327594, -88.535581]; // Actualizado al Puesto de Agua VLC
 
     // Inicializar mapa
     const map = L.map('map').setView(center, 15);
@@ -805,7 +805,8 @@
     // ------------------------------------------------------------------------------------------------
     // CAPA 2: PERÍMETRO DE EL PALOMAR (NUEVO)
     // ------------------------------------------------------------------------------------------------
-    
+      // Coordenadas de El Palomar, Jiquilisco, Usulután
+    const centerEP = [13.334658, -88.520411]; // Actualizado al El Palomar
     // NUEVO: Coordenadas calculadas del perímetro de El Palomar (convex hull)
     const perimetroElPalomar = [
         [13.3334592, -88.5200422],
@@ -829,7 +830,7 @@
         fillOpacity: 0.4
     }).addTo(map)
             // Marcador central de El Palomar (punto original de enfoque)
-    L.marker(center)
+    L.marker(centerEP)
         .addTo(map)
         .bindPopup("<b>El Palomar</b><br>Zona de estudio:<br>39.44 Hectáreas aprox.")
         .openPopup();
@@ -996,6 +997,7 @@ const iconIglesia = L.divIcon({
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
