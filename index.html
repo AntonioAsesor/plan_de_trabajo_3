@@ -745,6 +745,8 @@
 <script>
     // Coordenadas de La Concordia, Jiquilisco, Usulután
     const center = [13.327594, -88.535581]; // Actualizado al Puesto de Agua VLC
+    // Coordenadas de El Palomar (Centro de El Palomar)
+    const centerEP = [13.334658, -88.520411];
 
     // Inicializar mapa
     const map = L.map('map').setView(center, 15);
@@ -806,7 +808,7 @@
     // CAPA 2: PERÍMETRO DE EL PALOMAR (NUEVO)
     // ------------------------------------------------------------------------------------------------
       // Coordenadas de El Palomar, Jiquilisco, Usulután
-    const centerEP = [13.334658, -88.520411]; // Actualizado al El Palomar
+
     // NUEVO: Coordenadas calculadas del perímetro de El Palomar (convex hull)
     const perimetroElPalomar = [
         [13.3334592, -88.5200422],
@@ -830,17 +832,18 @@
         fillOpacity: 0.4
     }).addTo(map)
             // Marcador central de El Palomar (punto original de enfoque)
+    .bindPopup("Área de estudio: El Palomar")
+      .bindTooltip("El Palomar", {
+        permanent: true,
+        direction: 'center',
+        className: 'community-label-palomar'
+      });
+
+// NUEVO: Marcador central de El Palomar (Independiente del polígono)
     L.marker(centerEP)
         .addTo(map)
         .bindPopup("<b>El Palomar</b><br>Zona de estudio:<br>39.44 Hectáreas aprox.")
         .openPopup();
-
-      // NUEVO: Agrega la etiqueta permanente para El Palomar
-      .bindTooltip("El Palomar", {
-        permanent: true,
-        direction: 'center',
-        className: 'community-label-palomar' // Clase CSS para estilizar
-      });
 // ================== ÍCONOS PERSONALIZADOS (NUEVA VERSIÓN) ==================
 // Usaremos L.divIcon para crear íconos personalizados de Font Awesome
 const iconEmpresa = L.divIcon({
@@ -987,16 +990,17 @@ const iconIglesia = L.divIcon({
     
     // Profesionalismo y Calidad: Ajusta el mapa para que AMBOS polígonos
     // (Villa La Concordia y El Palomar) sean visibles en la pantalla.
+// Ajusta el mapa para que AMBOS polígonos (La Concordia y El Palomar) sean visibles.
     const todosLosPuntos = perimetroConcordiaCoords.concat(perimetroElPalomar);
     if (todosLosPuntos.length > 0) {
         const bounds = L.latLngBounds(todosLosPuntos);
-        // fitBounds ajusta el centro y el zoom automáticamente.
         map.fitBounds(bounds, { padding: [50, 50] }); 
     }
 </script>
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
