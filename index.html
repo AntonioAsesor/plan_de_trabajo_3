@@ -734,10 +734,10 @@
         attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Marcador central OJO
+    // Marcador central de Villa La Concordia (punto original de enfoque)
     L.marker(center)
         .addTo(map)
-        .bindPopup("<b>La Concordia</b><br>Zona de estudiooooo")
+        .bindPopup("<b>La Concordia</b><br>Zona de estudio")
         .openPopup();
 
     // Polígono de la zona de estudio existente
@@ -774,6 +774,34 @@
         fillOpacity: 0.4
     }).addTo(map)
       .bindPopup("Área aproximada de estudio");
+
+    // ------------------------------------------------------------------------------------------------
+    // CAPA 2: PERÍMETRO DE EL PALOMAR (NUEVO)
+    // ------------------------------------------------------------------------------------------------
+    
+    // NUEVO: Coordenadas calculadas del perímetro de El Palomar (convex hull)
+    const perimetroElPalomar = [
+        [13.3334592, -88.5200422],
+        [13.3336493, -88.5204435],
+        [13.3341808, -88.520304],
+        [13.3342956, -88.5202023],
+        [13.3361409, -88.5188763],
+        [13.3362149, -88.5176967],
+        [13.3375419, -88.5203273],
+        [13.3378713, -88.5196172],
+        [13.3385429, -88.51983],
+        [13.3409019, -88.519372],
+        [13.3405789, -88.5274121],
+        [13.3364866, -88.5208371]
+    ];
+
+    // NUEVO: Dibuja el polígono de El Palomar con un estilo diferente para distinguirlo.
+    L.polygon(perimetroElPalomar, {
+        color: "#ef476f", // Rojo coral
+        fillColor: "#ffc8dd", // Rosa pálido
+        fillOpacity: 0.4
+    }).addTo(map)
+      .bindPopup("Área de estudio: El Palomar");
 
 // ================== ÍCONOS PERSONALIZADOS (NUEVA VERSIÓN) ==================
 // Usaremos L.divIcon para crear íconos personalizados de Font Awesome
@@ -914,10 +942,24 @@ const iconIglesia = L.divIcon({
         // Llama a las funciones para cargar las capas
     loadHogares();
     loadEmpresas();
+
+    // ------------------------------------------------------------------------------------------------
+    // AJUSTE PROFESIONAL DEL ENFOQUE DEL MAPA
+    // ------------------------------------------------------------------------------------------------
+    
+    // Profesionalismo y Calidad: Ajusta el mapa para que AMBOS polígonos
+    // (Villa La Concordia y El Palomar) sean visibles en la pantalla.
+    const todosLosPuntos = perimetroConcordiaCoords.concat(perimetroElPalomar);
+    if (todosLosPuntos.length > 0) {
+        const bounds = L.latLngBounds(todosLosPuntos);
+        // fitBounds ajusta el centro y el zoom automáticamente.
+        map.fitBounds(bounds, { padding: [50, 50] }); 
+    }
 </script>
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
