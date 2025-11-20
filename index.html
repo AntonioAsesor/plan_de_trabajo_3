@@ -93,7 +93,28 @@
     visibility: visible;
     opacity: 1;
 }
-        
+        <style>
+    /* Estilo base para las etiquetas de las comunidades */
+    .leaflet-tooltip {
+        /* Deshabilita la flecha del tooltip */
+        border: none !important; 
+        background: transparent !important; 
+        box-shadow: none !important;
+        font-weight: 700;
+        font-size: 14px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6); /* Sombra para mejor lectura */
+    }
+
+    /* Estilo específico para La Concordia */
+    .community-label-concordia {
+        color: #004d40; /* Color oscuro que contrasta con el relleno claro */
+    }
+
+    /* Estilo específico para El Palomar */
+    .community-label-palomar {
+        color: #880e4f; /* Color oscuro que contrasta con el relleno coral */
+    }
+</style>
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -773,7 +794,13 @@
         fillColor: "#94d2bd",
         fillOpacity: 0.4
     }).addTo(map)
-      .bindPopup("Área aproximada de estudio");
+    .bindPopup("Área de estudio: Villa La Concordia")
+      // NUEVO: Agrega la etiqueta permanente para Villa La Concordia
+      .bindTooltip("Villa La Concordia", {
+        permanent: true,     // La etiqueta siempre está visible
+        direction: 'center', // Centra la etiqueta sobre el polígono
+        className: 'community-label-concordia' // Clase CSS para estilizar
+      });
 
     // ------------------------------------------------------------------------------------------------
     // CAPA 2: PERÍMETRO DE EL PALOMAR (NUEVO)
@@ -801,8 +828,13 @@
         fillColor: "#ffc8dd", // Rosa pálido
         fillOpacity: 0.4
     }).addTo(map)
-      .bindPopup("Área de estudio: El Palomar");
-
+      .bindPopup("Área de estudio: El Palomar")
+      // NUEVO: Agrega la etiqueta permanente para El Palomar
+      .bindTooltip("El Palomar", {
+        permanent: true,
+        direction: 'center',
+        className: 'community-label-palomar' // Clase CSS para estilizar
+      });
 // ================== ÍCONOS PERSONALIZADOS (NUEVA VERSIÓN) ==================
 // Usaremos L.divIcon para crear íconos personalizados de Font Awesome
 const iconEmpresa = L.divIcon({
@@ -959,6 +991,7 @@ const iconIglesia = L.divIcon({
 <!-- ================== FIN MAPA LEAFLET ================== -->
 </body>
 </html>
+
 
 
 
