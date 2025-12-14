@@ -177,7 +177,23 @@
           <div class="container mx-auto px-4 py-6">
             <h2 class="text-2xl font-bold text-[#005f73] mb-4">Mapa de Empresas Mapeadas y Entrevistadas</h2>
             <p class="text-gray-600 mb-4">Visualización interactiva de las empresas geo-referenciadas. Recuerde: el color del marcador diferencia las empresas "Mapeadas" de las "Entrevistadas".</p>
-        <iframe
+        
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 text-center">
+                <div class="card p-6 border-b-4 border-[#0a9396]">
+                    <p class="text-4xl font-bold text-[#0a9396]">109 (100%)</p> 
+                    <p class="text-gray-500">Empresas Mapeadas Total</p>
+                </div>
+                <div class="card p-6 border-b-4 border-[#ee9b00]">
+                    <p class="text-4xl font-bold text-[#ee9b00]">34 (31.2%)</p>
+                    <p class="text-gray-500">Empresas Entrevistadas</p>
+                </div>
+                <div class="card p-6 border-b-4 border-[#ca6702]">
+                    <p class="text-4xl font-bold text-[#ca6702]">75 (68.8%)</p>
+                    <p class="text-gray-500">Empresas Pendientes</p>
+                </div>
+            </div>
+              
+              <iframe
         src="https://www.google.com/maps/d/u/0/embed?mid=1mS6jKo4EIkdrsdVGj27HNoMEWqJNmVI&ehbc=2E312F"
         width="100%"
         height="650"
@@ -1023,6 +1039,7 @@
 </script>
 </body>
 </html>
+
 
 
 
